@@ -1,4 +1,5 @@
 import "dotenv/config";
+import "./websocket/websocket";
 
 import moment from "moment";
 import express from "express";
