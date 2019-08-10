@@ -7,5 +7,21 @@ export default mongoose.model(
 			type: String,
 			required: [true, 'Name is required'],
 		},
+		known: {
+			type: Boolean,
+			required: [true, 'Known status is required'],
+			default: false,
+		},
+		members: {
+			type: [String],
+			required: [true, 'Members are required'],
+			default: [],
+		},
+		description: {
+			type: String,
+		},
+		leader: {
+			type: String,
+		},
 	})
 );

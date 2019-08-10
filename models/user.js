@@ -10,10 +10,11 @@ module.exports = mongoose.model(
 		created: {
 			type: Date,
 			required: [true, 'Created date is required'],
-			default: Date.now,
+			default: Date.now(),
 		},
 		lastOnline: {
 			type: Date,
+			default: Date.now(),
 		},
 		sessionToken: {
 			type: String,
@@ -29,6 +30,15 @@ module.exports = mongoose.model(
 		mustChangePassword: {
 			type: Boolean,
 			default: false,
+		},
+		hasAuthEmail: {
+			type: Boolean,
+			default: true,
+		},
+		role: {
+			type: String,
+			required: true,
+			default: 'user',
 		},
 	})
 );

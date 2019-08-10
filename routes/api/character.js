@@ -9,8 +9,4 @@ router.get('/', (req, res) => {
 	res.send('character get');
 });
 
-/* Middleware for protected routes */
-router.use('/', authorization);
-router.use('/', updateLastOnline);
-
 export default router;

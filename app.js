@@ -3,10 +3,14 @@ import 'dotenv/config';
 import moment from 'moment';
 import express from 'express';
 import mongoose from 'mongoose';
-import mung from 'express-mung';
 import UserRouter from './routes/api/user';
+import bodyParser from 'body-parser';
 import OrganizationRouter from './routes/api/organization';
 import CharacterRouter from './routes/api/character';
+import RuleRouter from './routes/api/rule';
+import addAPIInformation from './middleware/api/addAPIInformation';
+import removePassword from './middleware/api/removePassword';
+import authorization from './middleware/api/authorization';
 
 const app = express();
 const port = process.env.SERVER_PORT;
@@ -18,30 +22,30 @@ mongoose.connect(
 	}`,
 	{ useNewUrlParser: true }
 );
+/* Add the body parsers */
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+/* Add global middleware */
+app.use(addAPIInformation);
+app.use(removePassword);
 
 /* Route for API Information */
 app.get('/', (req, res) => {
 	res.json({
-		APIVersion: process.env.API_VERSION,
-		time: moment().format(),
+		success: true,
+		message: 'Connected to API successfully',
 	});
 });
-/* Authorization middleware */
 
-/* Set up all routes */
+/* Set up routes */
 app.use('/user', UserRouter);
+
+/* Protect all other routes */
+app.use(authorization);
+
 app.use('/organization', OrganizationRouter);
 app.use('/character', CharacterRouter);
-
-/* Add the api info to all responses */
-app.use(
-	mung.json(function transform(body, req, res) {
-		body.APIInfo = {
-			APIVersion: process.env.API_VERSION,
-			time: moment().format(),
-		};
-		return body;
-	})
-);
+app.use('/rule', RuleRouter);
 
 app.listen(port, () => console.log(`Server listening on port ${port}`));

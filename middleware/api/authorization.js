@@ -2,7 +2,7 @@ import User from '../../models/User';
 
 /* Routes protected by this middleware require a valid session token to access */
 export default (req, res, next) => {
-	if (!req.get('authorization')) {
+	if (!req.get('Authorization')) {
 		res.status(403).json({
 			success: false,
 			message: 'This operation requires a valid token',
@@ -10,8 +10,8 @@ export default (req, res, next) => {
 	} else {
 		/* TODO: some sort of token manipulation */
 		/* Token is present */
-		const token = req.get('authorization');
-		User.findFirst({
+		const token = req.get('Authorization');
+		User.findOne({
 			sessionToken: token,
 		})
 			.then(user => {
