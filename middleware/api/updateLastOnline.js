@@ -4,15 +4,12 @@ import User from '../../models/User';
 export default (req, res, next) => {
 	/* Find the user from the token */
 	const token = req.get('authorization');
-	User.findFirst({
+	User.findOne({
 		sessionToken: token,
 	})
 		.then(user => {
-			user = {
-				...user,
-				lastOnline: Date.now,
-			};
-			user.save().then(next());
+			user.lastOnline = Date.now();
+			user.save().then(() => next());
 		})
 		.catch(e =>
 			res.status(404).json({
