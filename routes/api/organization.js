@@ -1,6 +1,7 @@
 import { Router } from "express";
 import authorization from "../../middleware/api/authorization";
 import updateLastOnline from "../../middleware/api/updateLastOnline";
+import adminOnly from "../../middleware/api/adminOnly";
 import Organizations from "../../models/Organization";
 
 const router = Router();
@@ -73,5 +74,11 @@ router.get("/list", async (req, res) => {
     organizations: query
   });
 });
+
+router.use("/", adminOnly);
+// @route   POST /organization
+// @desc    Creates a new organization
+// @access  Admin only
+router.post("/", (req, res) => {});
 
 export default router;

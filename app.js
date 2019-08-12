@@ -12,6 +12,8 @@ import RuleRouter from "./routes/api/rule";
 import ForumRouter from "./routes/api/armory";
 import bodyParser from "body-parser";
 import addAPIInfo from "./middleware/api/addAPIInfo";
+import routeList from "./logging/routes";
+import ListEndpoints from "express-list-endpoints";
 
 const app = express();
 const port = process.env.SERVER_PORT;
@@ -50,6 +52,7 @@ app.use(bodyParser.json());
 
 /* Route for API Information */
 app.get("/", (req, res) => {
+  routeList.print(app);
   res.json({
     APIVersion: process.env.API_VERSION,
     time: moment().format()
@@ -65,4 +68,11 @@ app.use("/armory", ArmoryRouter);
 app.use("/character", CharacterRouter);
 app.use("/rule", RuleRouter);
 
-app.listen(port, () => console.log(`Server listening on port ${port}`));
+app.listen(port, () => {
+  if (process.env.NODE_ENV === "debug") {
+    routeList.print(app);
+  }
+  console.log(`Server listening on port ${port}`);
+});
+
+console.log(ListEndpoints(app));

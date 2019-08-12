@@ -170,4 +170,18 @@ router.post("/:user", (req, res) => {
   });
 });
 
+// @route 	GET /user
+// @desc 	Retrieves all information about a user
+// @access 	Protected
+router.get("/", (req, res) => {
+  const token = req.get("authorization");
+  User.findOne({ sessionToken: token }).then(user => {
+    if (user) {
+		res.json({user)}
+    } else {
+      res.status(404).json({ success: false, message: "User not found" });
+    }
+  });
+});
+
 export default router;
