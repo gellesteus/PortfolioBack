@@ -1,0 +1,3 @@
+GET http://localhost:5000/organization/list
+content-type: application/json
+authorization: b4d550fe7cf00a50c244cbe4f60cd41eb75389e8

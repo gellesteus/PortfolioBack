@@ -1,5 +1,5 @@
 import "dotenv/config";
-import "./websocket/websocket";
+//import "./websocket/websocket";
 
 import moment from "moment";
 import express from "express";
@@ -11,6 +11,7 @@ import ArmoryRouter from "./routes/api/armory";
 import RuleRouter from "./routes/api/rule";
 import ForumRouter from "./routes/api/armory";
 import bodyParser from "body-parser";
+import addAPIInfo from "./middleware/api/addAPIInfo";
 
 const app = express();
 const port = process.env.SERVER_PORT;
@@ -22,6 +23,24 @@ mongoose.connect(
   }`,
   { useNewUrlParser: true }
 );
+
+/* Application level settings */
+app.enable("etag");
+
+/* Enable proxy to force https, only while the server is live */
+if (process.env.NODE_ENV === "live") {
+  app.enable("trust proxy");
+  app.use((req, res, next) => {
+    if (req.secure) {
+      next();
+    } else {
+      res.redirect("https://" + req.headers.host + req.url);
+    }
+  });
+}
+
+/* Add the api info to all responses */
+app.use(addAPIInfo);
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -45,8 +64,5 @@ app.use("/forum", ForumRouter);
 app.use("/armory", ArmoryRouter);
 app.use("/character", CharacterRouter);
 app.use("/rule", RuleRouter);
-
-/* Add the api info to all responses */
-app.use((req, res, next) => require("./middleware/api/addAPIInfo"));
 
 app.listen(port, () => console.log(`Server listening on port ${port}`));

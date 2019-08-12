@@ -3,27 +3,31 @@ import registerForumListener from "./forum";
 import conn from "./conn.js";
 const wss = new WebSocket.Server({ port: process.env.WEBSOCKET_PORT });
 
-wss.on("connection", ws => {
-  /* Global transformations for outgoing data */
-  const sendMessage = (message, callback) => {
-    const defaultSend = message => ws.send(message);
+try {
+  wss.on("connection", ws => {
+    /* Global transformations for outgoing data */
+    const sendMessage = (message, callback) => {
+      const defaultSend = message => ws.send(message);
 
-    if (target in message) {
-      if (message.target === conn.ALL) {
-        wss.clients.forEach(client => client.send(message.data));
-      } else if (message.target === conn.SENDER) {
-        defaultSend(message.data);
+      if (target in message) {
+        if (message.target === conn.ALL) {
+          wss.clients.forEach(client => client.send(message.data));
+        } else if (message.target === conn.SENDER) {
+          defaultSend(message.data);
+        }
+      } else {
+        /* Use default target */
+        defaultSend(message);
       }
-    } else {
-      /* Use default target */
-      defaultSend(message);
-    }
-  };
+    };
 
-  /* Check authentication */
+    /* Check authentication */
 
-  /* Subscribe the socket to all listeners */
-  registerForumListener(ws, sendMessage);
-});
+    /* Subscribe the socket to all listeners */
+    registerForumListener(ws, sendMessage);
+  });
 
-console.log(`Websocket running on port ${process.env.WEBSOCKET_PORT}`);
+  console.log(`Websocket listening on port ${process.env.WEBSOCKET_PORT}`);
+} catch (e) {
+  console.log(`Websocket initialization failed with error ${e}`);
+}
