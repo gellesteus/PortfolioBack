@@ -50,7 +50,7 @@ router.post("/login", (req, res) => {
         if (user) {
           bcrypt.compare(password, user.password).then(same => {
             if (same) {
-              const token = crypto.randomBytes(20).toString("hex");
+              const token = crypto.randomBytes(32).toString("hex");
               /* Update the token and last online values */
               user.sessionToken = token;
               user.lastOnline = Date.now();

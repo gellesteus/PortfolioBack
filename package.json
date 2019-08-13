@@ -2,14 +2,16 @@
 	"name": "portfolio-dnd-app-backend",
 	"version": "1.0.0",
 	"description": "",
+	"private": true,
 	"main": "index.js",
 	"scripts": {
 		"start": "node app.js",
 		"dev": "nodemon --exec babel-node app.js",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "webpack"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "Mark Kohler",
 	"license": "ISC",
 	"dependencies": {
 		"bcryptjs": "^2.4.3",
@@ -28,7 +30,11 @@
 		"@babel/core": "^7.5.5",
 		"@babel/node": "^7.5.5",
 		"@babel/preset-env": "^7.5.5",
+		"babel-loader": "^8.0.6",
 		"eslint": "^6.1.0",
-		"nodemon": "^1.19.1"
+		"nodemon": "^1.19.1",
+		"webpack": "^4.39.2",
+		"webpack-cli": "^3.3.6",
+		"webpack-node-externals": "^1.7.2"
 	}
 }

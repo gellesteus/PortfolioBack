@@ -5,6 +5,7 @@ import Post from "../../../models/Post";
 import User from "../../../models/User";
 import Topic from "../../../models/Topic";
 import Category from "../../../models/Category";
+
 const router = Router();
 router.use("/", authorization);
 router.use("/", updateLastOnline);
