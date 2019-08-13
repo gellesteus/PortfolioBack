@@ -3,6 +3,8 @@ import authorization from "../../../middleware/api/authorization";
 import updateLastOnline from "../../../middleware/api/updateLastOnline";
 import Post from "../../../models/Post";
 import User from "../../../models/User";
+import Topic from "../../../models/Topic";
+import Category from "../../../models/Category";
 const router = Router();
 router.use("/", authorization);
 router.use("/", updateLastOnline);
@@ -10,7 +12,32 @@ router.use("/", updateLastOnline);
 // @route   POST /forum/post
 // @desc    Create a new post
 // @access  Private
-router.post("/", (req, res) => {});
+router.post("/", async (req, res) => {
+  /* Retrieve all needed models */
+  try {
+    var topic = await Topic.findOne({ _id: req.body.topic });
+    var user = await User.findOne({ sessionToken: req.get("authorization") });
+  } catch (e) {
+    res
+      .status(500)
+      .json({ success: false, message: "An unknown error has occured" });
+  }
+  new Post({
+    userId: user._id,
+    topicId: topic._id,
+    category: topic.category,
+    message: req.body.message
+  })
+    .save()
+    .then(post =>
+      res.json({ success: true, message: "Posted successfully", post })
+    )
+    .catch(e => {
+      res
+        .status(500)
+        .json({ success: false, message: "An unknown error has occured" });
+    });
+});
 
 // @route   GET /forum/post/:id
 // @desc    Retrieves the given post
@@ -23,7 +50,7 @@ router.get("/:id", (req, res) => {});
 router.delete("/:id", async (req, res) => {
   const token = req.get("authorization");
   try {
-    const user = await User.findOne({ sessionToken: token });
+    var user = await User.findOne({ sessionToken: token });
   } catch (e) {
     res
       .status(500)
@@ -33,7 +60,7 @@ router.delete("/:id", async (req, res) => {
     .then(async post => {
       /* Check validation. Can only be done by moderators of the category, admins and the user that made the post */
       try {
-        const canDelete =
+        var canDelete =
           user.role === "admin" ||
           post.userId === user._id ||
           user._id in
