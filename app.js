@@ -25,6 +25,13 @@ mongoose.connect(
   }`,
   { useNewUrlParser: true }
 );
+/* Add the body parsers */
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+/* Add global middleware */
+app.use(addAPIInformation);
+app.use(removePassword);
 
 /* Application level settings */
 app.enable("etag");

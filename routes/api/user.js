@@ -177,7 +177,7 @@ router.get("/", (req, res) => {
   const token = req.get("authorization");
   User.findOne({ sessionToken: token }).then(user => {
     if (user) {
-		res.json({user)}
+      res.json({ user });
     } else {
       res.status(404).json({ success: false, message: "User not found" });
     }
