@@ -5,13 +5,21 @@ export default async (req, res, next) => {
 
   User.findOne({ sessionToken: token })
     .then(user => {
-      if (user.role === "admin") {
-        console.log("Admin only resoruce accessed");
-        next();
+      if (user) {
+        if (user.role === "admin") {
+          /* TODO: replace with actual logging */
+          console.log("Admin only resoruce accessed");
+          next();
+        } else {
+          res.status(403).json({
+            success: false,
+            message: "You are not authorized to access this resource"
+          });
+        }
       } else {
         res.status(403).json({
           success: false,
-          message: "You are not authorized to access this resource"
+          message: "User not found"
         });
       }
     })
