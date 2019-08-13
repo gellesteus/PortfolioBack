@@ -30,7 +30,7 @@ router.delete("/:id", (req, res) => {
   Post.findOneByID(req.params.id)
     .then(post => {
       /* Check validation. Can only be done by moderators of the category, admins and the user that made the post */
-      const canDelete = User.role==='admin'||post.userId=user._id||
+      const canDelete = User.role==='admin'||post.userId===user._id||user._id in (await Category.findOne({_id:post.category})).moderators
     })
     .catch(e => {
       res.status(404).json({ success: false, message: "Post does not exist" });
