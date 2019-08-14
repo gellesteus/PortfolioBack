@@ -40,9 +40,10 @@ router.get("/", async (req, res) => {
       });
     })
     .catch(e => {
-      res
-        .status(500)
-        .json({ success: false, message: "An unknown error occured" });
+      res.status(500).json({
+        success: false,
+        message: e.message || "An unknown error occured"
+      });
     });
 });
 
@@ -53,9 +54,77 @@ router.get("/:id", (req, res) => {
   try {
     Character.findById(req.params.id)
       .then(char => {
+        if (!char)
+          res
+            .status(403)
+            .json({ sucess: false, message: "Resource was not found" });
         res.json({
           success: true,
           message: "Character retrieved successfully",
+          character: char
+        });
+      })
+      .catch(e => {
+        res.status(500).json({
+          success: false,
+          message: e.message || "An unknown error occured"
+        });
+      });
+  } catch (e) {
+    res.status(500).json({
+      success: false,
+      message: e.message || "An unknown error has occured"
+    });
+  }
+});
+
+/* Create, update and delete routes are admin only */
+router.use("/", adminOnly);
+
+// @route	POST /character
+// @desc	Creates a new character
+// @access	Private
+router.post("/", (req, res) => {
+  new Character({
+    name: req.body.name,
+    known: req.body.known,
+    appearance: req.body.appearance,
+    flaws: req.body.flaws,
+    goals: req.body.goals,
+    ideals: req.body.ideals,
+    secrets: req.body.secrets,
+    bonds: req.body.bonds
+  })
+    .save()
+    .then(char => {
+      res.json({
+        success: true,
+        message: "Character created successfully",
+        character: char
+      });
+    })
+    .catch(e => {
+      res.status(500).json({
+        success: true,
+        message: e.message || "An unknown error occured"
+      });
+    });
+});
+
+// @router	PUT /character/:id
+// @desc	Updates the given character
+// @access	Private
+router.put("/:id", (req, res) => {
+  try {
+    Character.findById(req.params.id)
+      .then(char => {
+        if (!char)
+          res
+            .status(403)
+            .json({ sucess: false, message: "Resource was not found" });
+        res.json({
+          success: true,
+          message: "Character created successfully",
           character: char
         });
       })
@@ -66,27 +135,35 @@ router.get("/:id", (req, res) => {
       });
   } catch (e) {
     res
-      .status(500)
-      .json({ success: false, message: "Character with given id not found" });
+      .status(404)
+      .json({ success: false, message: "An unknown error occured" });
   }
 });
-
-/* Create, update and delete routes are admin only */
-router.use("/", adminOnly);
-
-// @route	POST /character
-// @desc	Creates a new character
-// @access	Private
-router.post("/", (req, res) => {});
-
-// @router	PUT /character/:id
-// @desc	Updates the given character
-// @access	Private
-router.put("/:id", (req, res) => {});
 
 // @router	DELETE /character/:id
 // @desc	Deletes the given character
 // @access	Private
-router.delete("/:id", (req, res) => {});
+router.delete("/:id", (req, res) => {
+  try {
+    Character.findByIdAndDelete(req.params.id)
+      .then(() => {
+        res.json({
+          success: true,
+          message: "Character deleted successfully"
+        });
+      })
+      .catch(e => {
+        res.status(500).json({
+          success: false,
+          message: "An unknown error occured"
+        });
+      });
+  } catch (e) {
+    res.status(404).json({
+      success: false,
+      message: "The requested resource was not found on the server"
+    });
+  }
+});
 
 export default router;

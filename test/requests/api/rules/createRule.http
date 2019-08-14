@@ -1,5 +1,5 @@
 POST http://localhost:3001/rule
-Authorization: 80b02d5074e5daa2cdf664498192b81fc3d51928a608869448e65ad8aa0454ec
+Authorization: a6c7b8831ff85b1243708906d5f266d2cba7e7d7db21f2085d2082764ac20056
 Content-Type: application/json
 
 {

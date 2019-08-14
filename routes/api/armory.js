@@ -20,6 +20,10 @@ router.get("/", (req, res) => {});
 router.get("/:id", (req, res) => {
   try {
     Item.findById(req.params.id).then(item => {
+      if (!item)
+        res
+          .status(403)
+          .json({ sucess: false, message: "Resource was not found" });
       res
         .json({
           success: true,
@@ -27,9 +31,10 @@ router.get("/:id", (req, res) => {
           item
         })
         .catch(e => {
-          res
-            .status(500)
-            .json({ success: false, message: "An unknown error occured" });
+          res.status(500).json({
+            success: false,
+            message: e.message || "An unknown error occured"
+          });
         });
     });
   } catch (e) {

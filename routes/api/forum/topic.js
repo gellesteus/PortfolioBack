@@ -18,6 +18,10 @@ router.post("/", (req, res) => {});
 router.get("/:id", (req, res) => {
   try {
     Topic.findById(req.params.id).then(topic => {
+      if (!topic)
+        res
+          .status(403)
+          .json({ sucess: false, message: "Resource was not found" });
       res
         .json({
           success: true,

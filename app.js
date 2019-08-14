@@ -69,7 +69,6 @@ app.get("/", (req, res) => {
 /* Set up all routes */
 app.use("/user", UserRouter);
 app.use("/organization", OrganizationRouter);
-app.use("/character", CharacterRouter);
 app.use("/forum", ForumRouter);
 app.use("/armory", ArmoryRouter);
 app.use("/character", CharacterRouter);

@@ -6,12 +6,9 @@ export default async (req, res, next) => {
   User.findOne({ sessionToken: token })
     .then(user => {
       if (user) {
-        console.log(user._id);
-        console.log(user);
-        console.log(user.role);
         if (user.role == "admin") {
           /* TODO: replace with actual logging */
-          console.log("Admin only resoruce accessed");
+          console.log("Admin only resource accessed");
           next();
         } else {
           res.status(403).json({

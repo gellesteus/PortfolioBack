@@ -1,0 +1,3 @@
+DELETE http://localhost:3001/organization/5d5467045288032985fa1706
+Authorization: a6c7b8831ff85b1243708906d5f266d2cba7e7d7db21f2085d2082764ac20056
+Content-Type: application/json

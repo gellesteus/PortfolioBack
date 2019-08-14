@@ -34,19 +34,23 @@ router.get("/", (req, res) => {
 // @desc    Retrieve a single category
 // @access  Private
 router.get("/:id", (req, res) => {
-  Category.findOne({ _id: req.params.id }).then(category =>
-    res
-      .json({
+  Category.findOne({ _id: req.params.id })
+    .then(category => {
+      if (!category)
+        res
+          .status(403)
+          .json({ sucess: false, message: "Resource was not found" });
+      res.json({
         success: true,
         message: "Category retrieved successfully",
         category
-      })
-      .catch(e => {
-        res
-          .status(500)
-          .json({ success: false, message: "Invalid category ID given" });
-      })
-  );
+      });
+    })
+    .catch(e => {
+      res
+        .status(500)
+        .json({ success: false, message: "Invalid category ID given" });
+    });
 });
 
 /* Create, update and delete routes are only able to be accessed by the admin */
@@ -64,7 +68,8 @@ router.post("/", (req, res) => {
     .then(category => {
       res.json({
         success: true,
-        message: "Category created successfully"
+        message: "Category created successfully",
+        category
       });
     })
     .catch(e => {
@@ -83,10 +88,14 @@ router.put("/:id", (req, res) => {
     Category.findById(req.params.id)
       .then(cat => {
         cat.name = req.body.name || cat.name;
-        cat.desc = req.body.desc || cat.name;
+        cat.desc = req.body.desc || cat.desc;
         cat
           .save()
           .then(cat => {
+            if (!cat)
+              res
+                .status(403)
+                .json({ sucess: false, message: "Resource was not found" });
             res.json({
               success: true,
               message: "Category updated successfully",

@@ -46,6 +46,10 @@ router.post("/", async (req, res) => {
 router.get("/:id", (req, res) => {
   Post.findOne({ _id: req.params.id })
     .then(post => {
+      if (!post)
+        res
+          .status(403)
+          .json({ sucess: false, message: "Resource was not found" });
       res.json({ success: true, message: "Post retrieved successfully", post });
     })
     .catch(e => {
@@ -103,10 +107,10 @@ router.delete("/:id", async (req, res) => {
     });
 });
 
-// @route   UPDATE /forum/post/:id
+// @route   PUT /forum/post/:id
 // @desc    Edits the given post
 // @access  Private
-router.update("/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
   const token = req.get("authorization");
   try {
     var user = await User.findOne({ sessionToken: token });
@@ -117,6 +121,10 @@ router.update("/:id", async (req, res) => {
   }
   Post.findByID(req.params.id)
     .then(async post => {
+      if (!post)
+        res
+          .status(403)
+          .json({ sucess: false, message: "Resource was not found" });
       /* Check validation. Can only be done by moderators of the category, admins and the user that made the post */
 
       const update = canUpdate => {

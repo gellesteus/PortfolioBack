@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
   const pages = totalDocs / count;
   const sortOrder = req.query.sortOrder || 1;
   const sortCol = req.query.sortColumn || "_id";
-  Rule.find({}, "name shortDesc longDesc _id", {
+  Rule.find({}, "name shortDesc _id", {
     skip: toSkip,
     limit: count,
     sort: { [sortCol]: sortOrder }
@@ -52,6 +52,10 @@ router.get("/", async (req, res) => {
 router.get("/:id", (req, res) => {
   Rule.findOne({ _id: req.params.id })
     .then(rule => {
+      if (!rule)
+        res
+          .status(403)
+          .json({ sucess: false, message: "Resource was not found" });
       res.json({ success: true, message: "Rule retrieved successfully", rule });
     })
     .catch(e => {
@@ -88,6 +92,10 @@ router.post("/", (req, res) => {
 router.put("/:id", (req, res) => {
   Rule.findOne({ _id: req.params.id })
     .then(rule => {
+      if (!rule)
+        res
+          .status(403)
+          .json({ sucess: false, message: "Resource was not found" });
       rule.name = req.body.name || rule.name;
       rule.shortDesc = req.body.shortDesc || rule.shortDesc;
       rule.longDesc = req.body.longDesc || rule.longDesc;
@@ -101,9 +109,10 @@ router.put("/:id", (req, res) => {
           });
         })
         .catch(e => {
-          res
-            .status(500)
-            .json({ success: false, message: "An unknown error occured" });
+          res.status(500).json({
+            success: false,
+            message: e.message || "An unknown error occured"
+          });
         });
     })
     .catch(e => {

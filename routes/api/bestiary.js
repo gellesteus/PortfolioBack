@@ -12,7 +12,41 @@ router.use("/", updateLastOnline);
 // @route   GET /bestiary
 // @desc    Returns a list of beasts
 // @access  Private
-router.get("/", async (req, res) => {});
+router.get("/", async (req, res) => {
+  /* Pagination is done on the server side */
+  const count = parseInt(req.query.count || 10);
+  const page = (req.query.page || 1) - 1;
+  const toSkip = page * count;
+  const totalDocs = await Beast.estimatedDocumentCount();
+  const pages = totalDocs / count;
+  const sortOrder = req.query.sortOrder || 1;
+  const sortCol = req.query.sortColumn || "_id";
+
+  Beast.find({}, "name shortDesc longDesc _id", {
+    skip: toSkip,
+    limit: count,
+    sort: { [sortCol]: sortOrder }
+  })
+    .then(rules => {
+      res.json({
+        success: true,
+        page: page + 1,
+        numberPerPage: count,
+        pages,
+        sortColumn: sortCol,
+        ascending: sortOrder === 1,
+        lastPage: page + 1 >= pages,
+        message: "Monsters retrieved successfully",
+        rules
+      });
+    })
+    .catch(e => {
+      res.status(500).json({
+        success: false,
+        message: e.message || "An unknown error occured"
+      });
+    });
+});
 
 // @route   GET /bestiary/:id
 // @desc    Returns the given beast
@@ -20,6 +54,10 @@ router.get("/", async (req, res) => {});
 router.get("/:id", (req, res) => {
   try {
     Beast.findById(req.params.id).then(beast => {
+      if (!beast)
+        res
+          .status(403)
+          .json({ sucess: false, message: "Resource was not found" });
       res
         .json({
           success: true,
@@ -27,9 +65,10 @@ router.get("/:id", (req, res) => {
           beast
         })
         .catch(e => {
-          res
-            .status(500)
-            .json({ success: false, message: "An unknown error occured" });
+          res.status(500).json({
+            success: false,
+            message: e.message || "An unknown error occured"
+          });
         });
     });
   } catch (e) {

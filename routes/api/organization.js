@@ -26,8 +26,11 @@ router.get("/", async (req, res) => {
 
   /* Retrieves a more complete list if the user is an admin */
   const token = req.get("authorization");
-  const user = await User.find({ sessionToken: token });
-  if (user.role !== "admin") {
+  const user = await User.find({ sessionToken: token })
+    .lean()
+    .exec();
+
+  if (user[0].role != "admin") {
     findParams.known = true;
   }
 
@@ -53,9 +56,10 @@ router.get("/", async (req, res) => {
       });
     })
     .catch(e => {
-      res
-        .status(500)
-        .json({ success: false, message: "An unknown error occured" });
+      res.status(500).json({
+        success: false,
+        message: e.message || "An unknown error occured"
+      });
     });
 });
 
@@ -66,38 +70,46 @@ router.get("/:id", (req, res) => {
   try {
     Organization.findById(req.params.id)
       .then(async org => {
-        if (org.known) {
-          res.json({
-            success: true,
-            message: "Organization retrieved successfully",
-            organization: org
-          });
-        } else {
-          const token = req.get("authorization");
-          const user = await User.findOne({ sessionToken: token });
-          if (user.role == "admin") {
+        if (org) {
+          if (org.known) {
             res.json({
               success: true,
               message: "Organization retrieved successfully",
               organization: org
             });
           } else {
-            res.status(403).json({
-              success: false,
-              message: "You do not have authorization to access this resource"
-            });
+            const token = req.get("authorization");
+            const user = await User.findOne({ sessionToken: token });
+            if (user.role == "admin") {
+              res.json({
+                success: true,
+                message: "Organization retrieved successfully",
+                organization: org
+              });
+            } else {
+              res.status(403).json({
+                success: false,
+                message: "You do not have authorization to access this resource"
+              });
+            }
           }
+        } else {
+          res
+            .status(404)
+            .json({ success: false, message: "Resource not found" });
         }
       })
       .catch(e => {
-        res
-          .status(500)
-          .json({ success: false, message: "An unknown error has occured" });
+        res.status(500).json({
+          success: false,
+          message: e.message || "An unknown error has occured"
+        });
       });
   } catch (e) {
-    res
-      .status(400)
-      .json({ success: false, message: "An invalid id was provided" });
+    res.status(400).json({
+      success: false,
+      message: e.message || "An invalid id was provided"
+    });
   }
 });
 
@@ -126,14 +138,15 @@ router.post("/", (req, res) => {
         });
       })
       .catch(e => {
-        res
-          .status(500)
-          .json({ success: false, message: "An unknown error occured" });
+        res.status(500).json({
+          success: false,
+          message: e.message || "An unknown error occured"
+        });
       });
   } catch (e) {
     res.status(500).json({
       success: false,
-      message: "An unknown error occured"
+      message: e.message || "An unknown error occured"
     });
   }
 });
@@ -167,6 +180,10 @@ router.put("/:id", (req, res) => {
   try {
     Organization.findById(req.params.id)
       .then(org => {
+        if (!org)
+          res
+            .status(403)
+            .json({ sucess: false, message: "Resource was not found" });
         org.name = req.body.name || org.name;
         org.members = req.body.members || org.members;
         org.known = req.body.known || org.known;

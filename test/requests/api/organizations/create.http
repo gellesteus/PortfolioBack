@@ -1,7 +1,9 @@
-POST http://localhost:5000/organization/list
+POST http://localhost:3001/organization
 content-type: application/json
-authorization: b4d550fe7cf00a50c244cbe4f60cd41eb75389e8
+authorization: a6c7b8831ff85b1243708906d5f266d2cba7e7d7db21f2085d2082764ac20056
 
 {
-    "test":"test"
+    "name":"test3",
+    "shortDesc":"This is a shot description",
+    "longDesc":"This is a long description"
 }

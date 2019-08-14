@@ -33,6 +33,10 @@ export default mongoose.model(
     role: {
       type: String,
       default: "user"
+    },
+    validated: {
+      type: Boolean,
+      default: false
     }
   })
 );
