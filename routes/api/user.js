@@ -7,32 +7,6 @@ import bcrypt from "bcryptjs";
 
 const router = Router();
 
-// @route   GET /user/:token
-// @desc    Return the user associated with a token
-// @access  Public
-router.get("/:token", (req, res) => {
-  const token = req.params.token;
-  User.findOne({
-    sessionToken: token
-  }).then(user => {
-    if (user) {
-      res.json({
-        success: true,
-        username: user.username,
-        sessionToken: user.sessionToken,
-        email: user.email,
-        id: user._id
-      });
-    } else {
-      /* Token not found */
-      res.status(404).json({
-        success: false,
-        message: `Token ${req.params.token} not found`
-      });
-    }
-  });
-});
-
 // @route   POST /user/login
 // @desc    Logs a user in if the credentials are correct
 // @access  Public
@@ -40,7 +14,7 @@ router.post("/login", (req, res) => {
   /* Check the credentials */
   const { email, password } = req.body;
   if (!email || !password) {
-    res.status(403).json({
+    res.status(400).json({
       success: false,
       message: "Please enter your email and password"
     });
@@ -58,10 +32,8 @@ router.post("/login", (req, res) => {
                 /* Send the response */
                 res.json({
                   success: true,
-                  username: user.username,
-                  email: user.email,
-                  sessionToken: token,
-                  mustChangePassword: user.mustChangePassword
+                  message: "User logged in successfully",
+                  user
                 })
               );
             } else {
@@ -90,21 +62,21 @@ router.post("/login", (req, res) => {
 // @route   POST /user
 // @desc    Create a user
 // @access  Public
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
+  const salt = await bcrypt.genSalt(10);
+  const pass = await bcrypt.hash(req.body.password, salt);
   new User({
     username: req.body.username,
     email: req.body.email,
-    password: req.body.password,
+    password: pass,
     lastOnline: Date.now
   })
     .save()
     .then(user =>
       res.json({
         success: true,
-        username: user.username,
-        sessionToken: user.session_token,
-        email: user.email,
-        id: user._id
+        message: "User created successfully",
+        user
       })
     );
 });
@@ -112,19 +84,22 @@ router.post("/", (req, res) => {
 // @route   POST /pass
 // @desc    Request a password reset
 // @access  Public
-router.post("/pass/:id", (req, res) => {
-  User.findOne({ email: req.params.id })
+router.post("/pass", (req, res) => {
+  User.findOne({ email: req.body.email })
     .then(user => {
       /* Generate the new password */
       const password = crypto.randomBytes(6).toString("hex");
       bcrypt.genSalt(10, (err, res) =>
         bcrypt.hash(password, res, (err, res) => {
           user.password = password;
-          user
-            .save()
-            .then(() =>
-              res.json({ success: true, message: "Password reset requested" })
-            );
+          user.sessionToken = null;
+          user.mustChangePassword = true;
+          user.save().then(() =>
+            res.json({
+              success: true,
+              message: "Password reset request accepted"
+            })
+          );
         })
       );
       /* Send the email with the password to the user */
@@ -142,42 +117,67 @@ router.post("/pass/:id", (req, res) => {
 router.use("/", authorization);
 router.use("/", updateLastOnline);
 
-// @route   POST /user
+// @route   UPDATE /user
 // @desc    Update a user's password
-// @access  Protected
-router.post("/:user", (req, res) => {
+// @access  Private
+router.put("/pass/", async (req, res) => {
+  const token = req.get("authorization");
+  const salt = await bcrypt.genSalt(10);
+  const pass = await bcrypt.hash(req.body.password, salt);
   User.findOne({
-    _id: req.params.user
+    sessionToken: token
   }).then(user => {
     if (user) {
-      user.password = req.body.password;
+      user.password = pass;
+      /* Invalidate the user's session token */
+      user.sessionToken = null;
       user.mustChangePassword = false;
       user.save().then(user =>
         res.send({
           success: true,
-          username: user.username,
-          sessionToken: user.session_token,
-          email: user.email,
-          id: user._id
+          message: "Password updated successfully",
+          user
         })
       );
     } else {
       res.status(404).json({
         success: false,
-        message: `User ${req.params.user} not found`
+        message: "User not found"
       });
     }
   });
 });
 
+// @route   POST /user/logout
+// @desc    Logs a user in if the credentials are correct
+// @access  Private
+router.post("/logout", (req, res) => {
+  const token = req.get("authorization");
+  User.findOne({ sessionToken: token })
+    .then(user => {
+      if (user) {
+        user.sessionToken = null;
+        user.save();
+        res.json({ success: true, message: "User logged out successfully" });
+      } else {
+        res.status(403).json({ success: false, message: "User not found" });
+      }
+    })
+    .catch(e =>
+      res
+        .status(500)
+        .json({ success: false, message: "An unknown error occured" })
+    );
+});
+
 // @route 	GET /user
 // @desc 	Retrieves all information about a user
-// @access 	Protected
+// @access 	Private
 router.get("/", (req, res) => {
   const token = req.get("authorization");
   User.findOne({ sessionToken: token }).then(user => {
     if (user) {
-      res.json({ user });
+      res.json({ success: true, message: "user retrieved successfully", user });
     } else {
       res.status(404).json({ success: false, message: "User not found" });
     }

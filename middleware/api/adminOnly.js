@@ -6,7 +6,10 @@ export default async (req, res, next) => {
   User.findOne({ sessionToken: token })
     .then(user => {
       if (user) {
-        if (user.role === "admin") {
+        console.log(user._id);
+        console.log(user);
+        console.log(user.role);
+        if (user.role == "admin") {
           /* TODO: replace with actual logging */
           console.log("Admin only resoruce accessed");
           next();

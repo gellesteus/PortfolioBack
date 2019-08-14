@@ -12,7 +12,7 @@ import RuleRouter from "./routes/api/rule";
 import ForumRouter from "./routes/api/armory";
 import bodyParser from "body-parser";
 import addAPIInfo from "./middleware/api/addAPIInfo";
-import routeList from "./logging/routes";
+import removePassword from "./middleware/api/removePassword";
 import ListEndpoints from "express-list-endpoints";
 
 const app = express();
@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 /* Add global middleware */
-app.use(addAPIInformation);
+app.use(addAPIInfo);
 app.use(removePassword);
 
 /* Application level settings */
@@ -59,7 +59,6 @@ app.use(bodyParser.json());
 
 /* Route for API Information */
 app.get("/", (req, res) => {
-  routeList.print(app);
   res.json({
     APIVersion: process.env.API_VERSION,
     time: moment().format()
@@ -76,10 +75,6 @@ app.use("/character", CharacterRouter);
 app.use("/rule", RuleRouter);
 
 app.listen(port, () => {
-  if (process.env.NODE_ENV === "debug") {
-    routeList.print(app);
-  }
+  console.log(ListEndpoints(app));
   console.log(`Server listening on port ${port}`);
 });
-
-console.log(ListEndpoints(app));

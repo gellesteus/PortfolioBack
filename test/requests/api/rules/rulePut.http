@@ -1,0 +1,7 @@
+PUT http://localhost:3001/rule/5d542c7561009b23dee084db
+Authorization: 80b02d5074e5daa2cdf664498192b81fc3d51928a608869448e65ad8aa0454ec
+Content-Type: application/json
+
+{
+    "shortDesc":"Short stuff here"
+}

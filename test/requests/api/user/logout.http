@@ -1,0 +1,3 @@
+POST http://localhost:3001/user/logout
+Content-Type: application/json
+Authorization: 322bdbfe72b4952542cf6a1ed72f218e176f9f1afc9f4109d61af116889bceb1

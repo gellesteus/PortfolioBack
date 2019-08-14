@@ -29,6 +29,10 @@ export default mongoose.model(
     mustChangePassword: {
       type: Boolean,
       default: false
+    },
+    role: {
+      type: String,
+      default: "user"
     }
   })
 );
