@@ -64,7 +64,7 @@ router.get("/", async (req, res) => {
 // @access  Protected
 router.get("/:id", (req, res) => {
   try {
-    Organization.findOneById(req.params.id)
+    Organization.findById(req.params.id)
       .then(async org => {
         if (org.known) {
           res.json({

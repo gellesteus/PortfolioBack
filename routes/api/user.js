@@ -120,7 +120,7 @@ router.use("/", updateLastOnline);
 // @route   UPDATE /user
 // @desc    Update a user's password
 // @access  Private
-router.put("/pass/", async (req, res) => {
+router.put("/pass", async (req, res) => {
   const token = req.get("authorization");
   const salt = await bcrypt.genSalt(10);
   const pass = await bcrypt.hash(req.body.password, salt);

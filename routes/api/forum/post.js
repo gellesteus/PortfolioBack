@@ -67,7 +67,7 @@ router.delete("/:id", async (req, res) => {
       .status(500)
       .json({ success: false, message: "An unknown error has occured" });
   }
-  Post.findOneByID(req.params.id)
+  Post.findByID(req.params.id)
     .then(async post => {
       /* Check validation. Can only be done by moderators of the category, admins and the user that made the post */
       try {
@@ -115,7 +115,7 @@ router.update("/:id", async (req, res) => {
       .status(500)
       .json({ success: false, message: "An unknown error has occured" });
   }
-  Post.findOneByID(req.params.id)
+  Post.findByID(req.params.id)
     .then(async post => {
       /* Check validation. Can only be done by moderators of the category, admins and the user that made the post */
 

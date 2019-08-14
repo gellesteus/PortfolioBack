@@ -17,7 +17,25 @@ router.get("/", async (req, res) => {});
 // @route   GET /bestiary/:id
 // @desc    Returns the given beast
 // @access  Private
-router.get("/:id", (req, res) => {});
+router.get("/:id", (req, res) => {
+  try {
+    Beast.findById(req.params.id).then(beast => {
+      res
+        .json({
+          success: true,
+          message: "entry successfully retreived",
+          beast
+        })
+        .catch(e => {
+          res
+            .status(500)
+            .json({ success: false, message: "An unknown error occured" });
+        });
+    });
+  } catch (e) {
+    res.status(404).json({ success: false, message: "Entry not found" });
+  }
+});
 
 router.use("/", adminOnly);
 

@@ -12,10 +12,16 @@ export default mongoose.model(
       required: [true, "Description is required"]
     },
     postion: {
-      type: Number
+      type: Number,
+      default: 1
+    },
+    created_at: {
+      type: String,
+      default: Date.now
     },
     topics: {
-      type: [String]
+      type: [String],
+      default: []
     }
   })
 );

@@ -15,7 +15,25 @@ router.post("/", (req, res) => {});
 // @route   GET /forum/topic/:id
 // @desc    Retrieves the given topic
 // @access  Private
-router.get("/:id", (req, res) => {});
+router.get("/:id", (req, res) => {
+  try {
+    Topic.findById(req.params.id).then(topic => {
+      res
+        .json({
+          success: true,
+          message: "entry successfully retreived",
+          topic
+        })
+        .catch(e => {
+          res
+            .status(500)
+            .json({ success: false, message: "An unknown error occured" });
+        });
+    });
+  } catch (e) {
+    res.status(404).json({ success: false, message: "Entry not found" });
+  }
+});
 
 // @route   DELETE /forum/topic/:id
 // @desc    Deletes the given topic

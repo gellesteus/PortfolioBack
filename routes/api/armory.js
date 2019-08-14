@@ -17,7 +17,25 @@ router.get("/", (req, res) => {});
 // @route   GET /armory/:id
 // @desc    Returns the given item
 // @access  Private
-router.get("/:id", (req, res) => {});
+router.get("/:id", (req, res) => {
+  try {
+    Item.findById(req.params.id).then(item => {
+      res
+        .json({
+          success: true,
+          message: "entry successfully retreived",
+          item
+        })
+        .catch(e => {
+          res
+            .status(500)
+            .json({ success: false, message: "An unknown error occured" });
+        });
+    });
+  } catch (e) {
+    res.status(404).json({ success: false, message: "Entry not found" });
+  }
+});
 
 router.use("/", adminOnly);
 
