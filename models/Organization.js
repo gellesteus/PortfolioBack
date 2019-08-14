@@ -7,13 +7,18 @@ export default mongoose.model(
       type: String,
       required: [true, "Name is required"]
     },
-    member: {
+    members: {
       type: [String],
       default: []
     },
     known: {
       type: Boolean,
-      default: false
+      default: false,
+      select: false
+    },
+    holdings: {
+      type: [String],
+      default: []
     },
     shortDesc: {
       type: String,

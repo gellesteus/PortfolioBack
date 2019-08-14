@@ -43,7 +43,17 @@ router.post("/", async (req, res) => {
 // @route   GET /forum/post/:id
 // @desc    Retrieves the given post
 // @access  Private
-router.get("/:id", (req, res) => {});
+router.get("/:id", (req, res) => {
+  Post.findOne({ _id: req.params.id })
+    .then(post => {
+      res.json({ success: true, message: "Post retrieved successfully", post });
+    })
+    .catch(e => {
+      res
+        .status(500)
+        .json({ success: false, message: "An unknown error occured" });
+    });
+});
 
 // @route   DELETE /forum/post/:id
 // @desc    Deletes the given post
@@ -78,11 +88,15 @@ router.delete("/:id", async (req, res) => {
           message: "You do not have authorization to perform this action"
         });
       } else {
-        post.delete();
-        res.json({ success: true, message: "Post deleted successfully" });
+        post
+          .delete()
+          .then(() => {
+            res.json({ success: true, message: "Post deleted successfully" });
+          })
+          .catch(e => {
+            res.json({ success: false, message: "An unknown error occured" });
+          });
       }
-
-      /* Delete the post */
     })
     .catch(e => {
       res.status(404).json({ success: false, message: "Post does not exist" });
@@ -92,5 +106,46 @@ router.delete("/:id", async (req, res) => {
 // @route   UPDATE /forum/post/:id
 // @desc    Edits the given post
 // @access  Private
-router.update("/:id", (req, res) => {});
+router.update("/:id", async (req, res) => {
+  const token = req.get("authorization");
+  try {
+    var user = await User.findOne({ sessionToken: token });
+  } catch (e) {
+    res
+      .status(500)
+      .json({ success: false, message: "An unknown error has occured" });
+  }
+  Post.findOneByID(req.params.id)
+    .then(async post => {
+      /* Check validation. Can only be done by moderators of the category, admins and the user that made the post */
+
+      const update = canUpdate => {
+        if (canUpdate) {
+          post.message = req.body.message || post.message;
+          post.updatedAt = Date.now();
+        } else {
+          res.status(403).json({
+            success: false,
+            message: "You do not have permission to do this"
+          });
+        }
+      };
+
+      try {
+        var canUpdate =
+          user.role === "admin" ||
+          post.userId === user._id ||
+          user._id in
+            (await Category.findOne({ _id: post.category })).moderators;
+        update(canUpdate);
+      } catch (e) {
+        res
+          .status(500)
+          .json({ success: false, message: "An unknown error has occured" });
+      }
+    })
+    .catch(e => {
+      res.status(404).json({ success: false, message: "Post does not exist" });
+    });
+});
 export default router;

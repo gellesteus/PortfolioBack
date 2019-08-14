@@ -22,9 +22,9 @@ router.get("/:id", (req, res) => {});
 // @access  Private
 router.delete("/:id", (req, res) => {});
 
-// @route   UPDATE /forum/topic/:id
+// @route   PUT /forum/topic/:id
 // @desc    Edits the given topic
 // @access  Private
-router.update("/:id", (req, res) => {});
+router.put("/:id", (req, res) => {});
 
 export default router;

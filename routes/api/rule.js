@@ -21,23 +21,29 @@ router.get("/", async (req, res) => {
   const pages = totalDocs / count;
   const sortOrder = req.query.sortOrder || 1;
   const sortCol = req.query.sortColumn || "_id";
-  Rule.find({}, "name shortDesc _id", {
+  Rule.find({}, "name shortDesc longDesc _id", {
     skip: toSkip,
     limit: count,
     sort: { [sortCol]: sortOrder }
-  }).then(rules => {
-    res.json({
-      success: true,
-      page: page + 1,
-      numberPerPage: count,
-      pages,
-      sortColumn: sortCol,
-      ascending: sortOrder === 1,
-      lastPage: page + 1 >= pages,
-      message: "Rules retrieved successfully",
-      rules
+  })
+    .then(rules => {
+      res.json({
+        success: true,
+        page: page + 1,
+        numberPerPage: count,
+        pages,
+        sortColumn: sortCol,
+        ascending: sortOrder === 1,
+        lastPage: page + 1 >= pages,
+        message: "Rules retrieved successfully",
+        rules
+      });
+    })
+    .catch(e => {
+      res
+        .status(500)
+        .json({ success: false, message: "An unknown error occured" });
     });
-  });
 });
 
 // @route   GET /rule/:id

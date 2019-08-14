@@ -9,6 +9,7 @@ import OrganizationRouter from "./routes/api/organization";
 import CharacterRouter from "./routes/api/character";
 import ArmoryRouter from "./routes/api/armory";
 import RuleRouter from "./routes/api/rule";
+import BestiaryRouter from "./routes/api/bestiary";
 import ForumRouter from "./routes/api/armory";
 import bodyParser from "body-parser";
 import addAPIInfo from "./middleware/api/addAPIInfo";
@@ -73,6 +74,7 @@ app.use("/forum", ForumRouter);
 app.use("/armory", ArmoryRouter);
 app.use("/character", CharacterRouter);
 app.use("/rule", RuleRouter);
+app.use("/bestiary", BestiaryRouter);
 
 app.listen(port, () => {
   console.log(ListEndpoints(app));
