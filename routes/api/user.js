@@ -69,7 +69,7 @@ router.post("/", async (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: pass,
-    lastOnline: Date.now
+    lastOnline: Date.now()
   })
     .save()
     .then(user =>
@@ -77,6 +77,12 @@ router.post("/", async (req, res) => {
         success: true,
         message: "User created successfully",
         user
+      })
+    )
+    .catch(e =>
+      res.status(500).json({
+        success: false,
+        message: e.message || "an unknown error occured"
       })
     );
 });
@@ -182,6 +188,6 @@ router.get("/", (req, res) => {
       res.status(404).json({ success: false, message: "User not found" });
     }
   });
-}); 
+});
 
 export default router;
