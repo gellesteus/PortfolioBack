@@ -3,7 +3,7 @@ Authorization: a6c7b8831ff85b1243708906d5f266d2cba7e7d7db21f2085d2082764ac20056
 Content-Type: application/json
 
 {
-    "name":"Rule 1",
-    "shortDesc":"Rule 1 stuff",
-    "longDesc":"Long rule 1 stuff"
+    "name":"Rule 2",
+    "shortDesc":"Rule 2 stuff",
+    "longDesc":"Long rule 2 stuff"
 }

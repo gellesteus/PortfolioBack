@@ -1,31 +1,39 @@
-import "dotenv/config";
+import 'dotenv/config';
 //import "./websocket/websocket";
 
-import moment from "moment";
-import express from "express";
-import mongoose from "mongoose";
-import UserRouter from "./routes/api/user";
-import OrganizationRouter from "./routes/api/organization";
-import CharacterRouter from "./routes/api/character";
-import ArmoryRouter from "./routes/api/armory";
-import RuleRouter from "./routes/api/rule";
-import BestiaryRouter from "./routes/api/bestiary";
-import ForumRouter from "./routes/api/armory";
-import bodyParser from "body-parser";
-import addAPIInfo from "./middleware/api/addAPIInfo";
-import removePassword from "./middleware/api/removePassword";
-import ListEndpoints from "express-list-endpoints";
+import moment from 'moment';
+import express from 'express';
+import mongoose from 'mongoose';
+import UserRouter from './routes/api/user';
+import OrganizationRouter from './routes/api/organization';
+import CharacterRouter from './routes/api/character';
+import ArmoryRouter from './routes/api/armory';
+import RuleRouter from './routes/api/rule';
+import BestiaryRouter from './routes/api/bestiary';
+import ForumRouter from './routes/api/armory';
+import bodyParser from 'body-parser';
+import addAPIInfo from './middleware/api/addAPIInfo';
+import removePassword from './middleware/api/removePassword';
+import ListEndpoints from 'express-list-endpoints';
+import cors from 'cors';
 
 const app = express();
 const port = process.env.SERVER_PORT;
 
 /* Connect to the database */
 mongoose.connect(
-  `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${
-    process.env.MONGO_URI
-  }`,
-  { useNewUrlParser: true }
+	`mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${
+		process.env.MONGO_URI
+	}`,
+	{ useNewUrlParser: true }
 );
+
+app.use(
+	cors({
+		origin: 'http://localhost:3000',
+	})
+);
+
 /* Add the body parsers */
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -35,18 +43,18 @@ app.use(addAPIInfo);
 app.use(removePassword);
 
 /* Application level settings */
-app.enable("etag");
+app.enable('etag');
 
 /* Enable proxy to force https, only while the server is live */
-if (process.env.NODE_ENV === "live") {
-  app.enable("trust proxy");
-  app.use((req, res, next) => {
-    if (req.secure) {
-      next();
-    } else {
-      res.redirect("https://" + req.headers.host + req.url);
-    }
-  });
+if (process.env.NODE_ENV === 'live') {
+	app.enable('trust proxy');
+	app.use((req, res, next) => {
+		if (req.secure) {
+			next();
+		} else {
+			res.redirect('https://' + req.headers.host + req.url);
+		}
+	});
 }
 
 /* Add the api info to all responses */
@@ -59,23 +67,23 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 /* Route for API Information */
-app.get("/", (req, res) => {
-  res.json({
-    APIVersion: process.env.API_VERSION,
-    time: moment().format()
-  });
+app.get('/', (req, res) => {
+	res.json({
+		APIVersion: process.env.API_VERSION,
+		time: moment().format(),
+	});
 });
 
 /* Set up all routes */
-app.use("/user", UserRouter);
-app.use("/organization", OrganizationRouter);
-app.use("/forum", ForumRouter);
-app.use("/armory", ArmoryRouter);
-app.use("/character", CharacterRouter);
-app.use("/rule", RuleRouter);
-app.use("/bestiary", BestiaryRouter);
+app.use('/user', UserRouter);
+app.use('/organization', OrganizationRouter);
+app.use('/forum', ForumRouter);
+app.use('/armory', ArmoryRouter);
+app.use('/character', CharacterRouter);
+app.use('/rule', RuleRouter);
+app.use('/bestiary', BestiaryRouter);
 
 app.listen(port, () => {
-  console.log(ListEndpoints(app));
-  console.log(`Server listening on port ${port}`);
+	console.log(ListEndpoints(app));
+	console.log(`Server listening on port ${port}`);
 });

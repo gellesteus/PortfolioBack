@@ -1,3 +1,3 @@
 GET http://localhost:3001/organization
-Authorization: a6c7b8831ff85b1243708906d5f266d2cba7e7d7db21f2085d2082764ac20056
+Authorization: 4cc1aeac01c39472d6221eabcbab00a0c3209d26d72efe43fc704cd571892f74
 Content-Type: application/json
