@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import Character from "./Character";
+import Location from "./Location";
 
 export default mongoose.model(
   "organization",
@@ -7,19 +9,23 @@ export default mongoose.model(
       type: String,
       required: [true, "Name is required"]
     },
-    members: {
-      type: [String],
-      default: []
-    },
+    members: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: Character
+      }
+    ],
     known: {
       type: Boolean,
       default: false,
       select: false
     },
-    holdings: {
-      type: [String],
-      default: []
-    },
+    holdings: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: Location
+      }
+    ],
     shortDesc: {
       type: String,
       required: [true, "Short description is required"]

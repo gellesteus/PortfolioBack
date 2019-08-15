@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export default mongoose.model(
-  "item",
+  "beast",
   mongoose.Schema({
     name: {
       type: String,
@@ -9,19 +9,14 @@ export default mongoose.model(
     },
     shortDesc: {
       type: String,
-      required: [true, "Description is required"]
+      required: [true, "Short description is required"]
     },
     longDesc: {
       type: String,
-      required: [true, "Description is required"]
-    },
-    created_at: {
-      type: String,
-      default: Date.now
+      required: [true, "Long description is required"]
     },
     images: {
-      type: [String],
-      default: []
+      type: [String]
     }
   })
 );
