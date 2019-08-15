@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const schema = new mongoose.Schema({
   username: {
     type: String,
@@ -6,14 +7,15 @@ const schema = new mongoose.Schema({
   },
   created: {
     type: Date,
-    required: [true, "Created date is required"],
     default: Date.now
   },
   lastOnline: {
-    type: Date
+    type: Date,
+    default: Date.now
   },
   sessionToken: {
-    type: String
+    type: String,
+    default: null
   },
   password: {
     type: String,
@@ -49,7 +51,6 @@ schema.pre("validate", function(next) {
 
 schema.pre("validate", function(next) {
   User.findOne({ username: this.username }).then(user => {
-    console.log("user");
     if (user) {
       next(new Error("Username has already been taken"));
     } else {
