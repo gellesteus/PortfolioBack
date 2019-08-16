@@ -8,9 +8,7 @@ export default mongoose.model(
       required: [true, "A title is required"]
     },
     body: {
-      /* Will reference a post that is to be displayed as the body of the first post of the topic */
-      type: mongoose.Schema.ObjectId,
-      required: [true, "A body is required"]
+      type: mongoose.Schema.ObjectId
     },
     category: {
       type: mongoose.Schema.ObjectId,
