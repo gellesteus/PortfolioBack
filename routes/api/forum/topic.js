@@ -4,6 +4,7 @@ import updateLastOnline from "../../../middleware/api/updateLastOnline";
 import Topic from "../../../models/Topic";
 import Post from "../../../models/Post";
 import User from "../../../models/User";
+import Category from "../../../models/Category";
 
 const router = Router();
 router.use("/", authorization);
@@ -40,30 +41,24 @@ router.post("/", async (req, res) => {
               })
             )
             .catch(e =>
-              res
-                .status(500)
-                .json({
-                  success: false,
-                  message: e.message || "an unknown error occured"
-                })
+              res.status(500).json({
+                success: false,
+                message: e.message || "an unknown error occured"
+              })
             );
         })
         .catch(e =>
-          res
-            .status(500)
-            .json({
-              success: false,
-              message: e.message || "an unknown error occured"
-            })
+          res.status(500).json({
+            success: false,
+            message: e.message || "an unknown error occured"
+          })
         );
     })
     .catch(e =>
-      res
-        .status(500)
-        .json({
-          success: false,
-          message: e.message || "an unknown error occured"
-        })
+      res.status(500).json({
+        success: false,
+        message: e.message || "an unknown error occured"
+      })
     );
 });
 
@@ -97,8 +92,28 @@ router.get("/:id", (req, res) => {
 // @route   DELETE /forum/topic/:id
 // @desc    Deletes the given topic
 // @access  Private
-router.delete("/:id", (req, res) => {
-  Topic.findById(req.params.id).then(topic => {
+router.delete("/:id", async (req, res) => {
+  const topic = await Topic.findById(req.params.id);
+
+  if (!topic) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Resource not found" });
+  }
+
+  const user = await User.findOne({ sessionToken: req.get("authorization") });
+  const category = await Category.findById(topic.category);
+  const canAccess =
+    topic.poster === user._id ||
+    user.role === "admin" ||
+    user._id in category.moderators;
+
+  if (!canAccess) {
+    res.status(403).json({
+      success: false,
+      message: "You do not have persmission to perform this action"
+    });
+  } else {
     if (!topic) {
       res
         .status(403)
@@ -120,7 +135,7 @@ router.delete("/:id", (req, res) => {
         })
       );
     }
-  });
+  }
 });
 
 // @route   PUT /forum/topic/:id
