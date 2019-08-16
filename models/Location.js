@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export default mongoose.model(
-  "beast",
+  "location",
   mongoose.Schema({
     name: {
       type: String,
