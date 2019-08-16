@@ -20,12 +20,16 @@ export default mongoose.model(
       default: Date.now
     },
     topics: {
-      type: [String],
+      type: [mongoose.Schema.ObjectId],
       default: []
     },
     section: {
       type: String,
       default: null
+    },
+    moderators: {
+      type: [mongoose.Schema.ObjectId],
+      default: []
     }
   })
 );

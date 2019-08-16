@@ -16,10 +16,8 @@ export default mongoose.model(
       type: mongoose.Schema.ObjectId,
       required: [true, "A topic must belong to a category"]
     },
-    posts: [
-      {
-        type: mongoose.Schema.ObjectId
-      }
-    ]
+    posts: {
+      type: [mongoose.Schema.ObjectId]
+    }
   })
 );
