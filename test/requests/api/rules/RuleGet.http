@@ -1,3 +1,3 @@
 GET http://localhost:3001/rule?page=1&count=10
-Authorization: a6c7b8831ff85b1243708906d5f266d2cba7e7d7db21f2085d2082764ac20056
+Authorization: 7d63df8b08137950d6f433d82c3944bc31c06015b26d1d16bcefc2158bd5cff5
 Content-Type: application/json

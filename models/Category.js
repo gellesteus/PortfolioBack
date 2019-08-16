@@ -22,6 +22,10 @@ export default mongoose.model(
     topics: {
       type: [String],
       default: []
+    },
+    section: {
+      type: String,
+      default: null
     }
   })
 );
