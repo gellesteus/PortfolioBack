@@ -2,6 +2,7 @@ import { Router } from "express";
 import authorization from "../../../middleware/api/authorization";
 import updateLastOnline from "../../../middleware/api/updateLastOnline";
 import Topic from "../../../models/Topic";
+import Post from "../../../models/Post";
 
 const router = Router();
 router.use("/", authorization);
@@ -42,7 +43,31 @@ router.get("/:id", (req, res) => {
 // @route   DELETE /forum/topic/:id
 // @desc    Deletes the given topic
 // @access  Private
-router.delete("/:id", (req, res) => {});
+router.delete("/:id", (req, res) => {
+  Topic.findById(req.params.id).then(topic => {
+    if (!topic) {
+      res
+        .status(403)
+        .json({ sucess: false, message: "Resource was not found" });
+    } else {
+      let posts;
+      /* Remove posts */
+      posts.find({ topic: topic._id }).then(posts =>
+        posts.forEach((e, i) => {
+          e.remove();
+          posts++;
+        })
+      );
+      topic.remove().then(() =>
+        res.json({
+          success: true,
+          message: "Topic deleted successfully",
+          posts
+        })
+      );
+    }
+  });
+});
 
 // @route   PUT /forum/topic/:id
 // @desc    Edits the given topic
