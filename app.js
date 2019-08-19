@@ -1,7 +1,6 @@
 import 'dotenv/config';
 //import "./websocket/websocket";
 
-import moment from 'moment';
 import express from 'express';
 import mongoose from 'mongoose';
 import UserRouter from './routes/api/user';

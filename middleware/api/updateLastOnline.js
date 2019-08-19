@@ -9,7 +9,7 @@ export default (req, res, next) => {
 	})
 		.then(user => {
 			if (user) {
-				user.lastOnline = Date.now();
+				user.lastOnline = +Date.now();
 				user.save().then(next());
 			} else {
 				res.status(404).json({

@@ -21,7 +21,7 @@ export default mongoose.model(
 			required: [true, 'A post must have a poster'],
 		},
 		createdAt: {
-			type: String,
+			type: Date,
 			default: Date.now,
 		},
 		update: {
@@ -29,7 +29,7 @@ export default mongoose.model(
 			deafult: false,
 		},
 		updatedAt: {
-			type: String,
+			type: Date,
 			default: null,
 		},
 	})

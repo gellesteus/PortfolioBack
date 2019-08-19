@@ -1,5 +1,4 @@
 let jobs = [];
-let timer;
 const schedule = (job, period, execNow = false) => {
 	if (execNow) {
 		jobs.push({ dispatch: job, period, ticks: 1000 });
@@ -19,7 +18,7 @@ const tick = () => {
 };
 
 const start = callback => {
-	timer = setInterval(tick, 60 * 1000);
+	setInterval(tick, 60 * 1000);
 	callback();
 	tick();
 };

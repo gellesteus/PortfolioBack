@@ -8,7 +8,7 @@ export default mongoose.model(
 			required: [true, 'The CSRF token value is required'],
 		},
 		date: {
-			type: String,
+			type: Date,
 			default: Date.now,
 		},
 	})
