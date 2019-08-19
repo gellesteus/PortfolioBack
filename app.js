@@ -53,7 +53,7 @@ app.use(bodyParser.json());
 app.use(addAPIInfo);
 app.use(removePassword);
 
-app.use(CSRFMiddleware);
+// app.use(CSRFMiddleware);
 /* Application level settings */
 app.enable('etag');
 

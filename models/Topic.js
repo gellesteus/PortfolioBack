@@ -21,7 +21,7 @@ export default mongoose.model(
 			type: [mongoose.Schema.ObjectId],
 		},
 		createdAt: {
-			type: String,
+			type: Date,
 			default: Date.now,
 		},
 	})
