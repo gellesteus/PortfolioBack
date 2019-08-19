@@ -37,6 +37,14 @@ const schema = new mongoose.Schema({
 		type: Boolean,
 		default: false,
 	},
+	fileCount: {
+		type: Number,
+		default: 0,
+	},
+	files: {
+		type: [String],
+		default: [],
+	},
 });
 
 schema.pre('validate', function(next) {

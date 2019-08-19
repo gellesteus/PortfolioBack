@@ -1,0 +1,3 @@
+GET http://localhost:3001/forum/post?count=5&user=5d55ed23ce30bf2e70a53e64&sortOrder=1&sortCol=createdAt
+Content-Type: application/json
+Authorization: 23eddd937ae4a0c311fca06f6affd203f88284ea143a7fead74216bb70f0eac2

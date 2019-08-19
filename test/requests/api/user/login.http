@@ -3,5 +3,6 @@ Content-Type: application/json
 
 {
     "email":"markkohler3@gmail.com",
-    "password":"123456"
+    "password":"123456",
+    "CSRF":"6791618bac009d52bf73e02127078a94de369e0dd2e4443d3b060c63d9d8fc4f"
 }

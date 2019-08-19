@@ -1,0 +1,3 @@
+GET http://localhost:3001/forum/post
+Content-Type: application/json
+Authorization: 89a8e4f9421b80403cba5533392833b9e3f276955e3400e84111092fb0eaf410
