@@ -3,7 +3,7 @@ import authorization from '../../middleware/api/authorization';
 import updateLastOnline from '../../middleware/api/updateLastOnline';
 import adminOnly from '../../middleware/api/adminOnly';
 import Beast from '../../models/Beast';
-
+import Cache from '../../middleware/api/Cache';
 const router = Router();
 
 router.use('/', authorization);
@@ -12,7 +12,7 @@ router.use('/', updateLastOnline);
 // @route   GET /bestiary
 // @desc    Returns a list of beasts
 // @access  Private
-router.get('/', async (req, res) => {
+router.get('/', Cache.retrieve, async (req, res) => {
 	/* Pagination is done on the server side */
 	const count = parseInt(req.query.count || 10);
 	const page = (req.query.page || 1) - 1;
@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
 		sort: { [sortCol]: sortOrder },
 	})
 		.then(beasts => {
-			res.json({
+			Cache.cache(3600)(req, res, {
 				success: true,
 				page: page + 1,
 				numberPerPage: count,
@@ -81,7 +81,28 @@ router.use('/', adminOnly);
 // @route   POST /bestiary
 // @desc    Create a new beast
 // @access  Private
-router.post('/', (req, res) => {});
+router.post('/', (req, res) => {
+	new Beast({
+		name: req.body.name,
+		shortDesc: req.body.shortDesc,
+		longDesc: req.body.longDesc,
+		images: req.body.images,
+	})
+		.save()
+		.then(beast =>
+			res.json({
+				success: true,
+				message: 'Monster created successfully',
+				beast,
+			})
+		)
+		.catch(e =>
+			res.status(500).json({
+				success: false,
+				message: e.message || 'An unknown error occured',
+			})
+		);
+});
 
 // @route   PUT /bestiary/:id
 // @desc    Update the given beast

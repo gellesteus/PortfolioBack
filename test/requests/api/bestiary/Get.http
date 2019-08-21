@@ -1,3 +1,3 @@
 GET http://localhost:3001/bestiary
-Authorization: f6bcefcf6c85ae8c4f9f734785a4b17ad3e473e78e2df4681d1d0b1f6953fc8e
+Authorization: 5a72257ff376c6179259d99acc5c65c9a410e8027c16007975953169a94e3add
 Content-Type: application/json
