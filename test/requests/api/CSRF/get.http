@@ -1,2 +1,2 @@
-GET http://localhost:3001/csrf
+GET http://localhost:3001/csrf?test=2
 Content-Type: application/json

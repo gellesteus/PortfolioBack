@@ -23,8 +23,8 @@ import CSRFMiddleware from './middleware/api/CSRF';
 import Scheduler from './jobs/Scheduler';
 import PruneCRFTokens from './jobs/PruneCSRFTokens';
 import PruneSessionTokens from './jobs/PruneSessionTokens';
-import Cache from './middleware/api/Cache';
 import Accepts from './middleware/api/Accepts';
+
 const app = express();
 const port = process.env.SERVER_PORT;
 
@@ -117,7 +117,6 @@ if (process.env.IS_WORKER === true) {
   /* Start the scheduler */
   Scheduler.start(() => console.log('Scheduler started'));
 }
-const cache = new Cache(process.env.REDIS_URL, process.env.REDIS_PASSWORD);
 
 app.listen(port, () => {
   console.log(ListEndpoints(app));
