@@ -1,29 +1,30 @@
-import "dotenv/config";
+import 'dotenv/config';
 //import "./websocket/websocket";
 
-import express from "express";
-import mongoose from "mongoose";
-import moment from "moment";
-import UserRouter from "./routes/api/user";
-import OrganizationRouter from "./routes/api/organization";
-import CharacterRouter from "./routes/api/character";
-import ArmoryRouter from "./routes/api/armory";
-import RuleRouter from "./routes/api/rule";
-import BestiaryRouter from "./routes/api/bestiary";
-import ForumRouter from "./routes/api/forum";
-import bodyParser from "body-parser";
-import addAPIInfo from "./middleware/api/addAPIInfo";
-import removePassword from "./middleware/api/removePassword";
-import ListEndpoints from "express-list-endpoints";
-import cors from "cors";
-import fileUpload from "express-fileupload";
-import ImageRouter from "./routes/api/image";
-import CSRFRouter from "./routes/api/csrf";
-import CSRFMiddleware from "./middleware/api/CSRF";
-import Scheduler from "./jobs/Scheduler";
-import PruneCRFTokens from "./jobs/PruneCSRFTokens";
-import PruneSessionTokens from "./jobs/PruneSessionTokens";
-
+import express from 'express';
+import mongoose from 'mongoose';
+import moment from 'moment';
+import UserRouter from './routes/api/user';
+import OrganizationRouter from './routes/api/organization';
+import CharacterRouter from './routes/api/character';
+import ArmoryRouter from './routes/api/armory';
+import RuleRouter from './routes/api/rule';
+import BestiaryRouter from './routes/api/bestiary';
+import ForumRouter from './routes/api/forum';
+import bodyParser from 'body-parser';
+import addAPIInfo from './middleware/api/addAPIInfo';
+import removePassword from './middleware/api/removePassword';
+import ListEndpoints from 'express-list-endpoints';
+import cors from 'cors';
+import fileUpload from 'express-fileupload';
+import ImageRouter from './routes/api/image';
+import CSRFRouter from './routes/api/csrf';
+import CSRFMiddleware from './middleware/api/CSRF';
+import Scheduler from './jobs/Scheduler';
+import PruneCRFTokens from './jobs/PruneCSRFTokens';
+import PruneSessionTokens from './jobs/PruneSessionTokens';
+import Cache from './middleware/api/Cache';
+import Accepts from './middleware/api/Accepts';
 const app = express();
 const port = process.env.SERVER_PORT;
 
@@ -35,12 +36,12 @@ mongoose
     }@${process.env.MONGO_URI}`,
     { useNewUrlParser: true }
   )
-  .then(() => console.log("Connected to database"))
+  .then(() => console.log('Connected to database'))
   .catch(e => console.log(`error connection to database: ${e}`));
 
 app.use(
   cors({
-    origin: "http://localhost:3000"
+    origin: 'http://localhost:3000'
   })
 );
 
@@ -50,22 +51,24 @@ app.use(fileUpload());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use(Accepts);
+
 /* Add global middleware */
 app.use(addAPIInfo);
 app.use(removePassword);
 
 app.use(CSRFMiddleware);
 /* Application level settings */
-app.enable("etag");
+app.enable('etag');
 
 /* Enable proxy to force https, only while the server is live */
-if (process.env.NODE_ENV === "live") {
-  app.enable("trust proxy");
+if (process.env.NODE_ENV === 'live') {
+  app.enable('trust proxy');
   app.use((req, res, next) => {
     if (req.secure) {
       next();
     } else {
-      res.redirect("https://" + req.headers.host + req.url);
+      res.redirect('https://' + req.headers.host + req.url);
     }
   });
 }
@@ -80,7 +83,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 /* Route for API Information */
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   res.json({
     APIVersion: process.env.API_VERSION,
     time: moment().format()
@@ -88,32 +91,33 @@ app.get("/", (req, res) => {
 });
 
 /* Set up all routes */
-app.use("/user", UserRouter);
-app.use("/organization", OrganizationRouter);
-app.use("/forum", ForumRouter);
-app.use("/armory", ArmoryRouter);
-app.use("/character", CharacterRouter);
-app.use("/rule", RuleRouter);
-app.use("/bestiary", BestiaryRouter);
-app.use("/image", ImageRouter);
-app.use("/csrf", CSRFRouter);
+app.use('/user', UserRouter);
+app.use('/organization', OrganizationRouter);
+app.use('/forum', ForumRouter);
+app.use('/armory', ArmoryRouter);
+app.use('/character', CharacterRouter);
+app.use('/rule', RuleRouter);
+app.use('/bestiary', BestiaryRouter);
+app.use('/image', ImageRouter);
+app.use('/csrf', CSRFRouter);
 
 /* Catch all unmanaged routes */
-app.all("*", (req, res) => {
+app.all('*', (req, res) => {
   res.status(404).json({
     success: false,
-    message: "The specified resource does not exist on the server"
+    message: 'The specified resource does not exist on the server'
   });
 });
 
-if (process.env.IS_WORKER) {
+if (process.env.IS_WORKER === true) {
   /* Schedule jobs */
   Scheduler.schedule(PruneCRFTokens, 60, true);
   Scheduler.schedule(PruneSessionTokens, 60, true);
 
   /* Start the scheduler */
-  Scheduler.start(() => console.log("Scheduler started"));
+  Scheduler.start(() => console.log('Scheduler started'));
 }
+const cache = new Cache(process.env.REDIS_URL, process.env.REDIS_PASSWORD);
 
 app.listen(port, () => {
   console.log(ListEndpoints(app));
