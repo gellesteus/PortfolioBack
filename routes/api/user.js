@@ -17,7 +17,7 @@ router.post('/login', (req, res) => {
   if (!email || !password) {
     res.status(400).json({
       success: false,
-      message: 'Please enter your email and password'
+      message: 'Please enter your email and password',
     });
   } else {
     User.findOne({ email: email })
@@ -34,27 +34,27 @@ router.post('/login', (req, res) => {
                 res.json({
                   success: true,
                   message: 'User logged in successfully',
-                  user
+                  user,
                 })
               );
             } else {
               res.status(403).json({
                 success: false,
-                message: 'Invalid username or password'
+                message: 'Invalid username or password',
               });
             }
           });
         } else {
           res.status(403).json({
             success: false,
-            message: 'Invalid username or password'
+            message: 'Invalid username or password',
           });
         }
       })
       .catch(e =>
         res.status(403).json({
           success: false,
-          message: 'Invalid username or password'
+          message: 'Invalid username or password',
         })
       );
   }
@@ -70,20 +70,20 @@ router.post('/', async (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: pass,
-    lastOnline: Date.now()
+    lastOnline: Date.now(),
   })
     .save()
     .then(user =>
       res.json({
         success: true,
         message: 'User created successfully',
-        user
+        user,
       })
     )
     .catch(e =>
       res.status(500).json({
         success: false,
-        message: e.message || 'an unknown error occured'
+        message: e.message || 'an unknown error occured',
       })
     );
 });
@@ -104,7 +104,7 @@ router.post('/pass', (req, res) => {
           user.save().then(() =>
             res.json({
               success: true,
-              message: 'Password reset request accepted'
+              message: 'Password reset request accepted',
             })
           );
         })
@@ -115,7 +115,7 @@ router.post('/pass', (req, res) => {
     .catch(e =>
       res.json({
         success: false,
-        message: 'Username not found'
+        message: 'Username not found',
       })
     );
 });
@@ -132,7 +132,7 @@ router.put('/pass', async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const pass = await bcrypt.hash(req.body.password, salt);
   User.findOne({
-    sessionToken: token
+    sessionToken: token,
   }).then(user => {
     if (user) {
       if (!bcrypt.compareSync(req.body.oldPassword, user.passowrd)) {
@@ -148,13 +148,13 @@ router.put('/pass', async (req, res) => {
         res.send({
           success: true,
           message: 'Password updated successfully',
-          user
+          user,
         })
       );
     } else {
       res.status(404).json({
         success: false,
-        message: 'User not found'
+        message: 'User not found',
       });
     }
   });
@@ -209,7 +209,7 @@ router.delete('/:id', (req, res) => {
     .catch(e =>
       res.status(404).json({
         success: false,
-        message: 'The requested resource was not found on the server'
+        message: 'The requested resource was not found on the server',
       })
     );
 });
@@ -229,7 +229,7 @@ router.put('/:id', (req, res) => {
           res.json({
             success: true,
             message: 'User updated successfully',
-            user
+            user,
           })
         )
         .catch(e =>
@@ -241,7 +241,7 @@ router.put('/:id', (req, res) => {
     .catch(e =>
       res.status(404).json({
         success: false,
-        message: 'The requested resource was not found on the server'
+        message: 'The requested resource was not found on the server',
       })
     );
 });

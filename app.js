@@ -31,9 +31,7 @@ const port = process.env.SERVER_PORT;
 /* Connect to the database */
 mongoose
   .connect(
-    `mongodb+srv://${process.env.MONGO_USERNAME}:${
-      process.env.MONGO_PASSWORD
-    }@${process.env.MONGO_URI}`,
+    `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_URI}`,
     { useNewUrlParser: true }
   )
   .then(() => console.log('Connected to database'))
@@ -41,7 +39,7 @@ mongoose
 
 app.use(
   cors({
-    origin: 'http://localhost:3000'
+    origin: 'http://localhost:3000',
   })
 );
 
@@ -86,7 +84,7 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => {
   res.json({
     APIVersion: process.env.API_VERSION,
-    time: moment().format()
+    time: moment().format(),
   });
 });
 
@@ -105,7 +103,7 @@ app.use('/csrf', CSRFRouter);
 app.all('*', (req, res) => {
   res.status(404).json({
     success: false,
-    message: 'The specified resource does not exist on the server'
+    message: 'The specified resource does not exist on the server',
   });
 });
 
