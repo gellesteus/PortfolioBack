@@ -3,7 +3,7 @@ import authorization from '../../middleware/api/authorization';
 import updateLastOnline from '../../middleware/api/updateLastOnline';
 import adminOnly from '../../middleware/api/adminOnly';
 import Rule from '../../models/Rule';
-
+import Cache from '../../middleware/api/Cache';
 const router = Router();
 
 router.use('/', authorization);
@@ -12,7 +12,7 @@ router.use('/', updateLastOnline);
 // @route   GET /rule
 // @desc    Returns a list of all rules and their short descriptions
 // @access  Private
-router.get('/', async (req, res) => {
+router.get('/', Cache.retrieve, async (req, res) => {
 	/* Pagination is done on the server side */
 	const count = parseInt(req.query.count || 10);
 	const page = (req.query.page || 1) - 1;
@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
 		sort: { [sortCol]: sortOrder },
 	})
 		.then(rules => {
-			res.json({
+			Cache.cache(3600)(req, res, {
 				success: true,
 				page: page + 1,
 				numberPerPage: count,
@@ -49,14 +49,18 @@ router.get('/', async (req, res) => {
 // @route   GET /rule/:id
 // @desc    Returns a single rule and its descriptions
 // @access  Private
-router.get('/:id', (req, res) => {
+router.get('/:id', Cache.retrieve, (req, res) => {
 	Rule.findOne({ _id: req.params.id })
 		.then(rule => {
 			if (!rule)
-				res
+				return res
 					.status(403)
 					.json({ sucess: false, message: 'Resource was not found' });
-			res.json({ success: true, message: 'Rule retrieved successfully', rule });
+			Cache.cache(3600)(req, res, {
+				success: true,
+				message: 'Rule retrieved successfully',
+				rule,
+			});
 		})
 		.catch(e => {
 			res.status(400).json({ success: false, message: 'Invalid id' });

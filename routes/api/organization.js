@@ -3,8 +3,7 @@ import authorization from '../../middleware/api/authorization';
 import updateLastOnline from '../../middleware/api/updateLastOnline';
 import adminOnly from '../../middleware/api/adminOnly';
 import Organization from '../../models/Organization';
-import User from '../../models/User';
-
+import Cache from '../../middleware/api/Cache';
 const router = Router();
 
 /* Middleware for protected routes */
@@ -14,9 +13,7 @@ router.use('/', updateLastOnline);
 // @route   GET /organization
 // @desc    Gets a list of organizations
 // @access  Protected
-router.get('/', async (req, res) => {
-	const findParams = {};
-
+router.get('/', Cache.retrieve, async (req, res) => {
 	/* Get values from query parameters */
 	const count = parseInt(req.query.count || 10);
 	const page = (req.query.page || 1) - 1;
@@ -25,25 +22,17 @@ router.get('/', async (req, res) => {
 	const sortCol = req.query.sortColumn || '_id';
 
 	/* Retrieves a more complete list if the user is an admin */
-	const token = req.get('authorization');
-	const user = await User.find({ sessionToken: token })
-		.lean()
-		.exec();
 
-	if (user[0].role != 'admin') {
-		findParams.known = true;
-	}
-
-	const totalDocs = await Organization.estimatedDocumentCount(findParams);
+	const totalDocs = await Organization.estimatedDocumentCount();
 	const pages = Math.ceil(totalDocs / count);
 
-	Organization.find(findParams, 'name members holdings shortDesc _id', {
+	Organization.find({}, 'name members holdings shortDesc _id', {
 		skip: toSkip,
 		limit: count,
 		sort: { [sortCol]: sortOrder },
 	})
 		.then(organizations => {
-			res.json({
+			Cache.cache(3600)(req, res, {
 				success: true,
 				page: page + 1,
 				numberPerPage: count,
@@ -66,52 +55,25 @@ router.get('/', async (req, res) => {
 // @router  GET /organization/:id
 // @desc    Gets a single organization
 // @access  Protected
-router.get('/:id', (req, res) => {
-	try {
-		Organization.findById(req.params.id)
-			.then(async org => {
-				if (org) {
-					if (org.known) {
-						res.json({
-							success: true,
-							message: 'Organization retrieved successfully',
-							organization: org,
-						});
-					} else {
-						const token = req.get('authorization');
-						const user = await User.findOne({ sessionToken: token });
-						if (user.role == 'admin') {
-							res.json({
-								success: true,
-								message: 'Organization retrieved successfully',
-								organization: org,
-							});
-						} else {
-							res.status(403).json({
-								success: false,
-								message:
-									'You do not have authorization to access this resource',
-							});
-						}
-					}
-				} else {
-					res
-						.status(404)
-						.json({ success: false, message: 'Resource not found' });
-				}
-			})
-			.catch(e => {
-				res.status(500).json({
-					success: false,
-					message: e.message || 'An unknown error has occured',
+router.get('/:id', Cache.retrieve, (req, res) => {
+	Organization.findById(req.params.id)
+		.then(org => {
+			if (org) {
+				Cache.cache(3600)(req, res, {
+					success: true,
+					message: 'Organization retrieved successfully',
+					organization: org,
 				});
+			} else {
+				res.status(404).json({ success: false, message: 'Resource not found' });
+			}
+		})
+		.catch(e => {
+			res.status(500).json({
+				success: false,
+				message: e.message || 'An unknown error has occured',
 			});
-	} catch (e) {
-		res.status(400).json({
-			success: false,
-			message: e.message || 'An invalid id was provided',
 		});
-	}
 });
 
 /* Create, update and delete routes are restricted to admin access */

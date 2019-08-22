@@ -30,6 +30,7 @@ export default {
 			if (isConnected) {
 				const key = genKey(req);
 				client.set(key, JSON.stringify(data), 'EX', duration);
+				console.log(`caching ${key} for ${duration} seconds`);
 				res.json(data);
 			}
 		};

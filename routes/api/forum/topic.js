@@ -5,13 +5,14 @@ import Topic from '../../../models/Topic';
 import Post from '../../../models/Post';
 import User from '../../../models/User';
 import Category from '../../../models/Category';
+import Cache from '../../../middleware/api/Cache';
 
 const router = Router();
 router.use('/', authorization);
 router.use('/', updateLastOnline);
 
-// @route   GET /forum/post
-// @desc    Returns a short list of tpics
+// @route   GET /forum/topic
+// @desc    Returns a short list of topics
 // @access  Protected
 router.get('/', async (req, res) => {
 	const user = await User.findOne({
@@ -101,24 +102,22 @@ router.post('/', async (req, res) => {
 // @route   GET /forum/topic/:id
 // @desc    Retrieves the given topic
 // @access  Private
-router.get('/:id', (req, res) => {
+router.get('/:id', Cache.retrieve, (req, res) => {
 	try {
 		Topic.findById(req.params.id).then(topic => {
 			if (!topic)
-				res
+				return res
 					.status(403)
 					.json({ sucess: false, message: 'Resource was not found' });
-			res
-				.json({
-					success: true,
-					message: 'entry successfully retreived',
-					topic,
-				})
-				.catch(e => {
-					res
-						.status(500)
-						.json({ success: false, message: 'An unknown error occured' });
-				});
+			Cache.cache(60)(req, res, {
+				success: true,
+				message: 'entry successfully retreived',
+				topic,
+			}).catch(e => {
+				res
+					.status(500)
+					.json({ success: false, message: 'An unknown error occured' });
+			});
 		});
 	} catch (e) {
 		res.status(404).json({ success: false, message: 'Entry not found' });

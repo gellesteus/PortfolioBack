@@ -5,7 +5,7 @@ import Post from '../../../models/Post';
 import User from '../../../models/User';
 import Topic from '../../../models/Topic';
 import Category from '../../../models/Category';
-
+import Cache from '../../../middleware/api/Cache';
 const router = Router();
 router.use('/', authorization);
 router.use('/', updateLastOnline);
@@ -79,14 +79,18 @@ router.post('/', async (req, res) => {
 // @route   GET /forum/post/:id
 // @desc    Retrieves the given post
 // @access  Private
-router.get('/:id', (req, res) => {
+router.get('/:id', Cache.retrieve, (req, res) => {
 	Post.findOne({ _id: req.params.id })
 		.then(post => {
 			if (!post)
-				res
+				return res
 					.status(403)
 					.json({ sucess: false, message: 'Resource was not found' });
-			res.json({ success: true, message: 'Post retrieved successfully', post });
+			Cache.cache(60)(req, res, {
+				success: true,
+				message: 'Post retrieved successfully',
+				post,
+			});
 		})
 		.catch(e => {
 			res

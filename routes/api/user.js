@@ -123,7 +123,7 @@ router.post('/pass', (req, res) => {
 router.use('/', authorization);
 router.use('/', updateLastOnline);
 
-// @route   UPDATE /user
+// @route   PUT /user/pass
 // @desc    Update a user's password
 // @access  Private
 router.put('/pass', async (req, res) => {
@@ -134,6 +134,11 @@ router.put('/pass', async (req, res) => {
 		sessionToken: token,
 	}).then(user => {
 		if (user) {
+			if (!bcrypt.compareSync(req.body.oldPassword, user.passowrd)) {
+				res
+					.status(400)
+					.json({ success: false, message: 'An invalid password was entered' });
+			}
 			user.password = pass;
 			/* Invalidate the user's session token */
 			user.sessionToken = null;
