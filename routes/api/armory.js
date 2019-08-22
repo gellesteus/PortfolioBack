@@ -29,7 +29,7 @@ router.get('/', Cache.retrieve, async (req, res) => {
   Item.find({}, '', {
     skip: toSkip,
     limit: count,
-    sort: { [sortCol]: sortOrder }
+    sort: { [sortCol]: sortOrder },
   })
     .then(items => {
       Cache.cache(3600)(req, res, {
@@ -41,13 +41,13 @@ router.get('/', Cache.retrieve, async (req, res) => {
         ascending: sortOrder === 1,
         lastPage: page + 1 >= pages,
         message: 'Items retrieved successfully',
-        items
+        items,
       });
     })
     .catch(e => {
       res.status(500).json({
         success: false,
-        message: e.message || 'An unknown error occured'
+        message: e.message || 'An unknown error occured',
       });
     });
 });
@@ -65,11 +65,11 @@ router.get('/:id', Cache.retrieve, (req, res) => {
       Cache.cache(3600)(req, res, {
         success: true,
         message: 'entry successfully retreived',
-        item
+        item,
       }).catch(e => {
         res.status(500).json({
           success: false,
-          message: e.message || 'An unknown error occured'
+          message: e.message || 'An unknown error occured',
         });
       });
     });
@@ -84,7 +84,12 @@ router.use('/', adminOnly);
 // @desc    Creates a new item
 // @access  Private
 router.post('/', (req, res) => {
-  new Item({})
+  new Item({
+    name: req.body.name,
+    shortDesc: req.body.shortDesc,
+    longDesc: req.body.longDesc,
+    images: req.body.images,
+  })
     .save()
     .then(item =>
       res.json({ success: true, message: 'Item created successfully', item })
@@ -92,7 +97,7 @@ router.post('/', (req, res) => {
     .catch(e =>
       res.status(400).json({
         success: false,
-        message: e.message || 'An unknown error occured'
+        message: e.message || 'An unknown error occured',
       })
     );
 });
@@ -113,7 +118,7 @@ router.put('/:id', (req, res) => {
           res.json({
             success: true,
             message: 'Item updated successfully',
-            item
+            item,
           })
         )
         .catch(e =>
@@ -125,7 +130,7 @@ router.put('/:id', (req, res) => {
     .catch(e =>
       res.status(404).json({
         success: false,
-        message: 'The requested resource was not found on the server'
+        message: 'The requested resource was not found on the server',
       })
     );
 });
@@ -139,12 +144,10 @@ router.delete('/:id', (req, res) => {
       res.json({ success: true, message: 'Item deleted successfylly' })
     )
     .catch(e =>
-      res
-        .status(404)
-        .json({
-          success: false,
-          message: 'The requested resource was not found on the server'
-        })
+      res.status(404).json({
+        success: false,
+        message: 'The requested resource was not found on the server',
+      })
     );
 });
 
