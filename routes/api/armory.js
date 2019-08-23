@@ -21,8 +21,6 @@ router.get('/', Cache.retrieve, async (req, res) => {
   const sortOrder = req.query.sortOrder || 1;
   const sortCol = req.query.sortColumn || '_id';
 
-  /* Retrieves a more complete list if the user is an admin */
-
   const totalDocs = await Item.estimatedDocumentCount();
   const pages = Math.ceil(totalDocs / count);
 
@@ -57,22 +55,24 @@ router.get('/', Cache.retrieve, async (req, res) => {
 // @access  Private
 router.get('/:id', Cache.retrieve, (req, res) => {
   try {
-    Item.findById(req.params.id).then(item => {
-      if (!item)
-        return res
-          .status(403)
-          .json({ sucess: false, message: 'Resource was not found' });
-      Cache.cache(3600)(req, res, {
-        success: true,
-        message: 'entry successfully retreived',
-        item,
-      }).catch(e => {
+    Item.findById(req.params.id)
+      .then(item => {
+        if (!item)
+          return res
+            .status(403)
+            .json({ sucess: false, message: 'Resource was not found' });
+        Cache.cache(3600)(req, res, {
+          success: true,
+          message: 'entry successfully retreived',
+          item,
+        });
+      })
+      .catch(e => {
         res.status(500).json({
           success: false,
           message: e.message || 'An unknown error occured',
         });
       });
-    });
   } catch (e) {
     res.status(404).json({ success: false, message: 'Entry not found' });
   }
@@ -102,7 +102,7 @@ router.post('/', (req, res) => {
     );
 });
 
-// @route   PUT /armory
+// @route   PUT /armory/:id
 // @desc    Updates the given item
 // @access  Private
 router.put('/:id', (req, res) => {
@@ -141,12 +141,12 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   Item.findByIdAndDelete(req.params.id)
     .then(() =>
-      res.json({ success: true, message: 'Item deleted successfylly' })
+      res.json({ success: true, message: 'Item deleted successfully' })
     )
     .catch(e =>
-      res.status(404).json({
+      res.status(500).json({
         success: false,
-        message: 'The requested resource was not found on the server',
+        message: 'An unknown error occured',
       })
     );
 });

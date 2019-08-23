@@ -2,7 +2,7 @@ import CSRF from '../../models/CSRF';
 
 export default async (req, res, next) => {
   if (req.method !== 'GET') {
-    const token = req.body.CSRF;
+    const token = req.get('CSRF');
     const validToken = await CSRF.findOne({ value: token });
 
     if (!validToken) {
