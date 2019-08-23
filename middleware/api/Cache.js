@@ -1,5 +1,6 @@
 import bluebird from 'bluebird';
 import redis from 'redis';
+import * as log from '../../logging/logging';
 bluebird.promisifyAll(redis);
 
 let isConnected = false;
@@ -10,13 +11,14 @@ const client = redis.createClient({
 });
 
 client.on('connect', () => {
-  console.log('Redis connected');
+  log.info('Successfully connected to Redis server');
   isConnected = true;
 });
 
-client.on('error', e => console.log(e));
+client.on('error', e => log.error(e));
 
 client.on('end', () => {
+  log.info('Connection to Redis server closed');
   isConnected = false;
 });
 
@@ -30,7 +32,7 @@ export default {
       if (isConnected) {
         const key = genKey(req);
         client.set(key, JSON.stringify(data), 'EX', duration);
-        console.log(`caching ${key} for ${duration} seconds`);
+        log.debug(`caching ${key} for ${duration} seconds`);
         res.json(data);
       }
     };
@@ -40,6 +42,7 @@ export default {
       const key = genKey(req);
       const data = await client.getAsync(key);
       if (data) {
+        log.trace('Data retrieved from cache');
         res.set('Content-Type', 'application/json');
         return res.send(data);
       }

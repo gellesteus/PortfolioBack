@@ -1,34 +1,38 @@
-import User from "../../models/User";
+import User from '../../models/User';
+import * as log from '../../logging/logging';
 
 /* Routes protected by this middleware require a valid session token to access */
 export default (req, res, next) => {
-  if (!req.get("authorization")) {
+  if (!req.get('authorization')) {
+    log.warn('Request rejected due to missing authorization');
     res.status(403).json({
       success: false,
-      message: "This operation requires a valid token"
+      message: 'This operation requires a valid token',
     });
   } else {
-    /* TODO: some sort of token manipulation */
     /* Token is present */
-    const token = req.get("authorization");
+    const token = req.get('authorization');
     User.findOne({
-      sessionToken: token
+      sessionToken: token,
     })
       .then(user => {
         if (user) {
+          log.debug('Valid authorization token sent');
           next();
         } else {
+          log.warn('Request rejected due to invalid session token');
           res.status(403).json({
             success: false,
-            message: "Invalid token sent"
+            message: 'Invalid token sent',
           });
         }
       })
-      .catch(e =>
+      .catch(e => {
+        log.error(e);
         res.status(403).json({
           success: false,
-          message: "An unknown error occurred"
-        })
-      );
+          message: 'An unknown error occurred',
+        });
+      });
   }
 };

@@ -4,6 +4,8 @@ import updateLastOnline from '../../middleware/api/updateLastOnline';
 import adminOnly from '../../middleware/api/adminOnly';
 import Beast from '../../models/Beast';
 import Cache from '../../middleware/api/Cache';
+import * as log from '../../logging/logging';
+
 const router = Router();
 
 router.use('/', authorization);
@@ -25,7 +27,7 @@ router.get('/', Cache.retrieve, async (req, res) => {
   Beast.find({}, 'name shortDesc longDesc _id', {
     skip: toSkip,
     limit: count,
-    sort: { [sortCol]: sortOrder }
+    sort: { [sortCol]: sortOrder },
   })
     .then(beasts => {
       Cache.cache(3600)(req, res, {
@@ -37,13 +39,13 @@ router.get('/', Cache.retrieve, async (req, res) => {
         ascending: sortOrder === 1,
         lastPage: page + 1 >= pages,
         message: 'Monsters retrieved successfully',
-        beasts
+        beasts,
       });
     })
     .catch(e => {
       res.status(500).json({
         success: false,
-        message: e.message || 'An unknown error occured'
+        message: e.message || 'An unknown error occured',
       });
     });
 });
@@ -62,12 +64,12 @@ router.get('/:id', (req, res) => {
         .json({
           success: true,
           message: 'entry successfully retreived',
-          beast
+          beast,
         })
         .catch(e => {
           res.status(500).json({
             success: false,
-            message: e.message || 'An unknown error occured'
+            message: e.message || 'An unknown error occured',
           });
         });
     });
@@ -86,20 +88,20 @@ router.post('/', (req, res) => {
     name: req.body.name,
     shortDesc: req.body.shortDesc,
     longDesc: req.body.longDesc,
-    images: req.body.images
+    images: req.body.images,
   })
     .save()
     .then(beast =>
       res.json({
         success: true,
         message: 'Monster created successfully',
-        beast
+        beast,
       })
     )
     .catch(e =>
       res.status(500).json({
         success: false,
-        message: e.message || 'An unknown error occured'
+        message: e.message || 'An unknown error occured',
       })
     );
 });
@@ -120,7 +122,7 @@ router.put('/:id', (req, res) => {
           res.json({
             success: true,
             message: 'Monster updated successfully',
-            beast
+            beast,
           })
         )
         .catch(e =>
@@ -132,7 +134,7 @@ router.put('/:id', (req, res) => {
     .catch(e =>
       res.status(404).json({
         success: false,
-        message: 'The requested resource was not found on the server'
+        message: 'The requested resource was not found on the server',
       })
     );
 });
@@ -148,7 +150,7 @@ router.delete('/:id', (req, res) => {
     .catch(e =>
       res.status(404).json({
         success: false,
-        message: 'The requested resource was not found on the server'
+        message: 'The requested resource was not found on the server',
       })
     );
 });

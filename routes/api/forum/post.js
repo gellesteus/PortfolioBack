@@ -6,6 +6,8 @@ import User from '../../../models/User';
 import Topic from '../../../models/Topic';
 import Category from '../../../models/Category';
 import Cache from '../../../middleware/api/Cache';
+import * as log from '../../../logging/logging';
+
 const router = Router();
 router.use('/', authorization);
 router.use('/', updateLastOnline);
@@ -14,14 +16,16 @@ router.use('/', updateLastOnline);
 // @desc    Returns a short list of tpics
 // @access  Protected
 router.get('/', async (req, res) => {
+  log.trace('GET /forum/post reached endpoint');
   const user = await User.findOne({
     sessionToken: req.get('authorization'),
-  }).catch(e =>
+  }).catch(e => {
+    log.error(e);
     res.status(500).json({
       success: false,
       message: e.message || 'An unknown error occured',
-    })
-  );
+    });
+  });
   const userID = req.query.user || user._id;
   const sortOrder = req.query.sortOrder || 1;
   const sortCol = req.query.sortCol || 'createdAt';
@@ -38,23 +42,26 @@ router.get('/', async (req, res) => {
         posts,
       });
     })
-    .catch(e =>
+    .catch(e => {
+      log.error(e);
       res.status(500).json({
         success: false,
         message: e.message || 'An unknown error occured',
-      })
-    );
+      });
+    });
 });
 
 // @route   POST /forum/post
 // @desc    Create a new post
 // @access  Private
 router.post('/', async (req, res) => {
-  /* Retrieve all needed models */
+  log.trace('POST /forum/post reached endpoint');
+  /* Pull in all relevant data points */
   try {
     var topic = await Topic.findOne({ _id: req.body.topic });
     var user = await User.findOne({ sessionToken: req.get('authorization') });
   } catch (e) {
+    log.error(e);
     res
       .status(500)
       .json({ success: false, message: 'An unknown error has occured' });
@@ -70,6 +77,7 @@ router.post('/', async (req, res) => {
       res.json({ success: true, message: 'Posted successfully', post })
     )
     .catch(e => {
+      log.error(e);
       res
         .status(500)
         .json({ success: false, message: 'An unknown error has occured' });
@@ -80,6 +88,7 @@ router.post('/', async (req, res) => {
 // @desc    Retrieves the given post
 // @access  Private
 router.get('/:id', Cache.retrieve, (req, res) => {
+  log.trace(`GET /forum/post/${req.params.id} reached endpoint`);
   Post.findOne({ _id: req.params.id })
     .then(post => {
       if (!post)
@@ -103,6 +112,7 @@ router.get('/:id', Cache.retrieve, (req, res) => {
 // @desc    Deletes the given post
 // @access  Private
 router.delete('/:id', async (req, res) => {
+  log.trace(`DELETE /forum/post/${req.params.id} reached endpoint`);
   const token = req.get('authorization');
   try {
     var user = await User.findOne({ sessionToken: token });
@@ -151,6 +161,7 @@ router.delete('/:id', async (req, res) => {
 // @desc    Edits the given post
 // @access  Private
 router.put('/:id', async (req, res) => {
+  log.trace(`PUT /forum/post/${req.params.id} reached endpoint`);
   const token = req.get('authorization');
   try {
     var user = await User.findOne({ sessionToken: token });

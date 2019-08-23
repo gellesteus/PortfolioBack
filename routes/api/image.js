@@ -4,6 +4,8 @@ import authorization from '../../middleware/api/authorization';
 import notBanned from '../../middleware/api/notBanned';
 import validated from '../../middleware/api/requireValidatedAccount';
 import User from '../../models/User';
+import * as log from '../../logging/logging';
+
 const router = Router();
 
 router.use(authorization);

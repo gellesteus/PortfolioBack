@@ -24,7 +24,9 @@ import Scheduler from './jobs/Scheduler';
 import PruneCRFTokens from './jobs/PruneCSRFTokens';
 import PruneSessionTokens from './jobs/PruneSessionTokens';
 import Accepts from './middleware/api/Accepts';
+import * as log from './logging/logging';
 
+log.info('Server starting');
 const app = express();
 const port = process.env.SERVER_PORT;
 
@@ -34,9 +36,16 @@ mongoose
     `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_URI}`,
     { useNewUrlParser: true }
   )
-  .then(() => console.log('Connected to database'))
-  .catch(e => console.log(`error connection to database: ${e}`));
+  .then(() => log.info('Connected to database'))
+  .catch(e => log.error(e));
 
+log.trace('Preventing mongoose deprecation warnings');
+
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+
+log.trace('Adding middleware');
 app.use(
   cors({
     origin: 'http://localhost:3000',
@@ -61,6 +70,7 @@ app.enable('etag');
 
 /* Enable proxy to force https, only while the server is live */
 if (process.env.NODE_ENV === 'live') {
+  log.debug('Enabling trust proxy');
   app.enable('trust proxy');
   app.use((req, res, next) => {
     if (req.secure) {
@@ -87,7 +97,9 @@ app.get('/', (req, res) => {
     time: moment().format(),
   });
 });
+log.trace('Done adding middleware');
 
+log.trace('Registering routes');
 /* Set up all routes */
 app.use('/user', UserRouter);
 app.use('/organization', OrganizationRouter);
@@ -101,22 +113,25 @@ app.use('/csrf', CSRFRouter);
 
 /* Catch all unmanaged routes */
 app.all('*', (req, res) => {
+  log.info('invalid uri accessed. Falling back to default route for request');
   res.status(404).json({
     success: false,
     message: 'The specified resource does not exist on the server',
   });
 });
+log.trace('done registering routes');
 
 if (process.env.IS_WORKER === true) {
+  log.debug('Server is a worker, enabling scheduler');
   /* Schedule jobs */
   Scheduler.schedule(PruneCRFTokens, 60, true);
   Scheduler.schedule(PruneSessionTokens, 60, true);
 
   /* Start the scheduler */
-  Scheduler.start(() => console.log('Scheduler started'));
+  Scheduler.start(() => log.trace('Scheduler started'));
 }
 
 app.listen(port, () => {
-  console.log(ListEndpoints(app));
-  console.log(`Server listening on port ${port}`);
+  log.debug(ListEndpoints(app));
+  log.info(`Server listening on port ${port}`);
 });

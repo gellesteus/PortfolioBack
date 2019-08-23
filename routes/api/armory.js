@@ -4,7 +4,7 @@ import updateLastOnline from '../../middleware/api/updateLastOnline';
 import adminOnly from '../../middleware/api/adminOnly';
 import Item from '../../models/Item';
 import Cache from '../../middleware/api/Cache';
-
+import * as log from '../../logging/logging';
 const router = Router();
 
 router.use('/', authorization);

@@ -5,6 +5,7 @@ import updateLastOnline from '../../middleware/api/updateLastOnline';
 import adminOnly from '../../middleware/api/adminOnly';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
+import * as log from '../../logging/logging';
 
 const router = Router();
 
