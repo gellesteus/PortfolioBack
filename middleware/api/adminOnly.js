@@ -8,7 +8,7 @@ export default async (req, res, next) => {
     .then(user => {
       if (user) {
         if (user.role == 'admin') {
-          Log.info('Admin only resource accessed successfully');
+          log.info('Admin only resource accessed successfully');
           next();
         } else {
           log.warn('Admin resource request access denied');

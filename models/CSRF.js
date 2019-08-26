@@ -7,9 +7,10 @@ export default mongoose.model(
       type: String,
       required: [true, 'The CSRF token value is required'],
     },
-    date: {
+    created_at: {
       type: Date,
       default: Date.now,
+      expires: 28800,
     },
   })
 );
