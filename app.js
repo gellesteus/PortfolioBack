@@ -24,7 +24,7 @@ import Scheduler from './jobs/Scheduler';
 import PruneSessionTokens from './jobs/PruneSessionTokens';
 import Accepts from './middleware/api/Accepts';
 import * as log from './logging/logging';
-
+import logRequest from './middleware/api/logRequest';
 log.info('Server starting');
 const app = express();
 const port = process.env.SERVER_PORT;
@@ -57,6 +57,7 @@ app.use(fileUpload());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use(logRequest);
 app.use(Accepts);
 
 /* Add global middleware */
