@@ -8,7 +8,7 @@ export default async (
   next: () => void
 ): Promise<void> => {
   if (req.method !== 'GET') {
-    const token: string = req.get('CSRF');
+    const token: string = req.get('CSRF') || '';
     const validToken = await CSRF.findOne({ value: token });
 
     if (!validToken) {

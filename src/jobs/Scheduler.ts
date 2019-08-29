@@ -35,7 +35,7 @@ const tick = () => {
   }
 };
 
-const start = callback => {
+const start = (callback: () => void) => {
   log.debug('Scheduler starting');
   setInterval(tick, 60 * 1000);
   log.info('Scheduler started');

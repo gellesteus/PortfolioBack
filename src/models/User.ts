@@ -62,7 +62,8 @@ export interface IUser extends mongoose.Document {
 }
 
 schema.pre('validate', function(next: (e?: Error) => void): void {
-  User.findOne({ email: this.email, _id: { $ne: this._id } }).then(user => {
+  const self: IUser = this as IUser;
+  User.findOne({ email: self.email, _id: { $ne: self._id } }).then(user => {
     if (user) {
       next(new Error('Email is already in use'));
     } else {
@@ -72,10 +73,12 @@ schema.pre('validate', function(next: (e?: Error) => void): void {
 });
 
 schema.pre('validate', function(next: (e?: Error) => void): void {
-  User.findOne({ username: this.username, _id: { $ne: this._id } }).then(
+  const self: IUser = this as IUser;
+
+  User.findOne({ username: self.username, _id: { $ne: self._id } }).then(
     user => {
       if (user) {
-        if (user._id === this._id) {
+        if (user._id === self._id) {
           /* Only found this model */
           next();
         } else {

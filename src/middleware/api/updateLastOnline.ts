@@ -5,7 +5,7 @@ import User from '../../models/User';
 /*  Update the last time a user was online */
 export default (req: Request, res: Response, next: () => void): void => {
   /* Find the user from the token */
-  const token = req.get('authorization');
+  const token = req.get('authorization') || '';
   User.findOne({
     session_token: token
   })

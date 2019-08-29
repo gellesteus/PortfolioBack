@@ -31,14 +31,16 @@ router.get(
 // @access	Public
 router.delete('/:token', (req, res) => {
   CSRF.findOne({ value: req.params.token })
-    .then(csrf =>
-      csrf.remove().then(() =>
-        res.json({
-          message: 'CSRF token deleted successfully',
-          success: true
-        })
-      )
-    )
+    .then(csrf => {
+      if (csrf) {
+        csrf.remove().then(() =>
+          res.json({
+            message: 'CSRF token deleted successfully',
+            success: true
+          })
+        );
+      }
+    })
     .catch((e: Error) => {
       log.error(e.message);
       res.status(500).json({

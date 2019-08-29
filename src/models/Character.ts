@@ -1,14 +1,14 @@
 import mongoose from 'mongoose';
 
 export interface ICharacter extends mongoose.Document {
-  apperance?: string;
-  bond?: string;
-  description?: string;
-  flaws?: string;
-  goal?: string;
-  ideal?: string;
+  apperance?: string | null;
+  bond?: string | null;
+  description?: string | null;
+  flaws?: string | null;
+  goal?: string | null;
+  ideal?: string | null;
   known: boolean;
-  mannerism?: string;
+  mannerism?: string | null;
   name: string;
   secret: string;
 }

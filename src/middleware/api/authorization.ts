@@ -12,7 +12,7 @@ export default (req: Request, res: Response, next: () => void): void => {
     });
   } else {
     /* Token is present */
-    const token: string = req.get('authorization');
+    const token: string = req.get('authorization') || '';
     User.findOne({
       session_token: token
     })

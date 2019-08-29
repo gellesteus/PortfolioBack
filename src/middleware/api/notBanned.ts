@@ -4,7 +4,7 @@ import User from '../../models/User';
 
 /* Middleware to prevent banned users from accessing the protected resource */
 export default (req: Request, res: Response, next: () => void): void => {
-  const token: string = req.get('authorization');
+  const token: string = req.get('authorization') || '';
   User.findOne({ session_token: token })
     .then(user => {
       if (user) {

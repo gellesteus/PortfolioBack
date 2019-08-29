@@ -20,10 +20,19 @@ router.get(
   '/',
   async (req: Request, res: Response): Promise<void> => {
     log.trace('GET /forum/post reached endpoint');
-    let user: IUser;
+    let user: IUser | undefined;
     try {
       user = await User.findOne({
         session_token: req.get('authorization')
+      }).then(u => {
+        if (u) {
+          return u;
+        } else {
+          res.status(404).json({
+            message: 'The requested resource was not found on the server',
+            success: false
+          });
+        }
       });
     } catch (e) {
       log.error(e.message);
@@ -32,29 +41,31 @@ router.get(
         success: false
       });
     }
-    const userID = req.query.user || user._id;
-    const sortOrder = req.query.sortOrder || 1;
-    const sortCol = req.query.sortCol || 'created_at';
-    const count = +req.query.count || 5;
+    if (user) {
+      const userID = req.query.user || user._id;
+      const sortOrder = req.query.sortOrder || 1;
+      const sortCol = req.query.sortCol || 'created_at';
+      const count = +req.query.count || 5;
 
-    Topic.find({ poster: userID }, null, {
-      limit: count,
-      sort: { [sortCol]: sortOrder }
-    })
-      .then(posts => {
-        res.json({
-          message: 'Posts retrieved successfully',
-          posts,
-          success: true
-        });
+      Post.find({ poster: userID }, null, {
+        limit: count,
+        sort: { [sortCol]: sortOrder }
       })
-      .catch((e: Error) => {
-        log.error(e.message);
-        res.status(500).json({
-          message: e.message || 'An unknown error occured',
-          success: false
+        .then(posts => {
+          res.json({
+            message: 'Posts retrieved successfully',
+            posts,
+            success: true
+          });
+        })
+        .catch((e: Error) => {
+          log.error(e.message);
+          res.status(500).json({
+            message: e.message || 'An unknown error occured',
+            success: false
+          });
         });
-      });
+    }
   }
 );
 
@@ -66,33 +77,55 @@ router.post(
   async (req: Request, res: Response): Promise<void> => {
     log.trace('POST /forum/post reached endpoint');
     /* Pull in all relevant data points */
-    let topic: ITopic;
-    let user: IUser;
+    let topic: ITopic | undefined;
+    let user: IUser | undefined;
     try {
-      topic = await Topic.findById(req.body.topic);
-      user = await User.findOne({ session_token: req.get('authorization') });
+      topic = await Topic.findById(req.body.topic).then(t => {
+        if (t) {
+          return t;
+        } else {
+          res.status(404).json({
+            message: 'Resource was not found on this server',
+            success: false
+          });
+        }
+      });
+      user = await User.findOne({
+        session_token: req.get('authorization')
+      }).then(t => {
+        if (t) {
+          return t;
+        } else {
+          res.status(404).json({
+            message: 'Resource was not found on this server',
+            success: false
+          });
+        }
+      });
     } catch (e) {
       log.error(e.message);
       res
         .status(500)
         .json({ success: false, message: 'An unknown error has occured' });
     }
-    new Post({
-      category: topic.category,
-      message: req.body.message,
-      topicId: topic._id,
-      userId: user._id
-    })
-      .save()
-      .then(post =>
-        res.json({ success: true, message: 'Posted successfully', post })
-      )
-      .catch(e => {
-        log.error(e);
-        res
-          .status(500)
-          .json({ success: false, message: 'An unknown error has occured' });
-      });
+    if (topic) {
+      new Post({
+        category: topic.category,
+        message: req.body.message,
+        topicId: topic._id,
+        userId: user._id
+      })
+        .save()
+        .then(post =>
+          res.json({ success: true, message: 'Posted successfully', post })
+        )
+        .catch(e => {
+          log.error(e);
+          res
+            .status(500)
+            .json({ success: false, message: 'An unknown error has occured' });
+        });
+    }
   }
 );
 

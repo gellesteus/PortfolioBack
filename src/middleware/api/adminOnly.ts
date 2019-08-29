@@ -7,7 +7,7 @@ export default async (
   res: Response,
   next: () => void
 ): Promise<void> => {
-  const token: string = req.get('authorization');
+  const token: string = req.get('authorization') || '';
 
   User.findOne({ session_token: token })
     .then(user => {

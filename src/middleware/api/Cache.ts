@@ -1,8 +1,6 @@
-import bluebird from 'bluebird';
+import { Request, Response } from 'express';
 import redis from 'redis';
 import * as log from '../../logging/logging';
-
-bluebird.promisifyAll(redis);
 
 let isConnected = false;
 
@@ -23,13 +21,13 @@ client.on('end', () => {
   isConnected = false;
 });
 
-const genKey = req => {
+const genKey = (req: Request) => {
   return req.originalUrl;
 };
 
 export default {
-  cache: duration => {
-    return (req, res, data) => {
+  cache: (duration: number) => {
+    return (req: Request, res: Response, data: object): void => {
       if (isConnected) {
         const key = genKey(req);
         client.set(key, JSON.stringify(data), 'EX', duration);
@@ -38,15 +36,21 @@ export default {
       }
     };
   },
-  retrieve: async (req, res, next) => {
+  retrieve: async (
+    req: Request,
+    res: Response,
+    next: () => void
+  ): Promise<any> => {
     if (isConnected) {
       const key = genKey(req);
-      const data = await client.getAsync(key);
-      if (data) {
-        log.trace('Data retrieved from cache');
-        res.set('Content-Type', 'application/json');
-        return res.send(data);
-      }
+      client.get(key, (err: Error | null, data: string) => {
+        if (data) {
+          log.trace('Data retrieved from cache');
+          res.set('Content-Type', 'application/json');
+          res.send(data);
+          return;
+        }
+      });
     }
     next();
   }

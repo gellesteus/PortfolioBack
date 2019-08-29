@@ -28,6 +28,7 @@
   "author": "Mark Kohler",
   "license": "ISC",
   "dependencies": {
+    "@types/express-mung": "^0.5.2",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.5",
     "body-parser": "^1.19.0",

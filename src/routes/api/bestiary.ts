@@ -117,6 +117,15 @@ router.post('/', (req: Request, res: Response): void => {
 router.put('/:id', (req: Request, res: Response): void => {
   Beast.findById(req.params.id)
     .then(beast => {
+      if (!beast) {
+        res
+          .status(404)
+          .json({
+            success: false,
+            message: 'Resource was not found on the server'
+          });
+        return;
+      }
       beast.name = req.body.name || beast.name;
       beast.shortDesc = req.body.shortDesc || beast.shortDesc;
       beast.longDesc = req.body.longDesc || beast.longDesc;

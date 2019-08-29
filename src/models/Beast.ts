@@ -4,7 +4,7 @@ export interface IBeast extends mongoose.Document {
   name: string;
   shortDesc: string;
   longDesc: string;
-  images?: string[];
+  images?: string[] | null;
 }
 
 export default mongoose.model<IBeast>(

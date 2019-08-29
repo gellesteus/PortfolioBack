@@ -126,6 +126,13 @@ router.post('/', (req: Request, res: Response): void => {
 router.put('/:id', (req: Request, res: Response): void => {
   Item.findById(req.params.id)
     .then(item => {
+      if (!item) {
+        res.status(404).json({
+          message: 'The item was not found',
+          success: false
+        });
+        return;
+      }
       item.name = req.body.name || item.name;
       item.shortDesc = req.body.shortDesc || item.shortDesc;
       item.longDesc = req.body.longDesc || item.longDesc;
