@@ -21,11 +21,10 @@ import ImageRouter from './routes/api/image';
 import CSRFRouter from './routes/api/csrf';
 import CSRFMiddleware from './middleware/api/CSRF';
 import Scheduler from './jobs/Scheduler';
-import PruneCRFTokens from './jobs/PruneCSRFTokens';
 import PruneSessionTokens from './jobs/PruneSessionTokens';
 import Accepts from './middleware/api/Accepts';
 import * as log from './logging/logging';
-
+import logRequest from './middleware/api/logRequest';
 log.info('Server starting');
 const app = express();
 const port = process.env.SERVER_PORT;
@@ -58,6 +57,7 @@ app.use(fileUpload());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use(logRequest);
 app.use(Accepts);
 
 /* Add global middleware */
@@ -124,7 +124,6 @@ log.trace('done registering routes');
 if (process.env.IS_WORKER === true) {
   log.debug('Server is a worker, enabling scheduler');
   /* Schedule jobs */
-  Scheduler.schedule(PruneCRFTokens, 60, true);
   Scheduler.schedule(PruneSessionTokens, 60, true);
 
   /* Start the scheduler */
