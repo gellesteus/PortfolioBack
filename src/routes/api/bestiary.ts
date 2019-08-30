@@ -118,12 +118,10 @@ router.put('/:id', (req: Request, res: Response): void => {
   Beast.findById(req.params.id)
     .then(beast => {
       if (!beast) {
-        res
-          .status(404)
-          .json({
-            success: false,
-            message: 'Resource was not found on the server'
-          });
+        res.status(404).json({
+          message: 'Resource was not found on the server',
+          success: false
+        });
         return;
       }
       beast.name = req.body.name || beast.name;

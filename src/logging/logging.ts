@@ -31,8 +31,8 @@ const fileLevel = getNumericLevel(process.env.LOG_FILE_LEVEL || 'info');
 const consoleLevel = getNumericLevel(process.env.LOG_CONSOLE_LEVEL || 'warn');
 
 /* Create the log directory if it does not exist */
-if (!fs.existsSync(`${__dirname}/log`)) {
-  fs.mkdirSync(`${__dirname}/log`);
+if (!fs.existsSync(`${__dirname}/Log`)) {
+  fs.mkdirSync(`${__dirname}/Log`);
 }
 
 export const trace = (message: string): void => {
@@ -43,7 +43,7 @@ export const trace = (message: string): void => {
     const date = moment().format('YYYYMMDD');
     fs.appendFile(
       `${__dirname}/Log/${date}.log`,
-      `TRACE: ${moment()} ${message} ${os.EOL}`,
+      `TRACE: ${moment().format()} ${message} ${os.EOL}`,
       err => {
         if (err) {
           error(err.message);
@@ -63,7 +63,7 @@ export const debug = (message: string): void => {
     const date = moment().format('YYYYMMDD');
     fs.appendFile(
       `${__dirname}/Log/${date}.log`,
-      `DEBUG: ${moment()} ${message} ${os.EOL}`,
+      `DEBUG: ${moment().format()} ${message} ${os.EOL}`,
       err => {
         if (err) {
           error(err.message);
@@ -85,7 +85,7 @@ export const info = (message: string): void => {
     const date = moment().format('YYYYMMDD');
     fs.appendFile(
       `${__dirname}/Log/${date}.log`,
-      `INFO : ${moment()} ${message} ${os.EOL}`,
+      `INFO : ${moment().format()} ${message} ${os.EOL}`,
       err => {
         if (err) {
           error(err.message);
@@ -106,7 +106,7 @@ export const warn = (message: string): void => {
     const date = moment().format('YYYYMMDD');
     fs.appendFile(
       `${__dirname}/Log/${date}.log`,
-      `WARN : ${moment()} ${message} ${os.EOL}`,
+      `WARN : ${moment().format()} ${message} ${os.EOL}`,
       err => {
         if (err) {
           error(err.message);
@@ -127,7 +127,7 @@ export const error = (message: string): void => {
     const date = moment().format('YYYYMMDD');
     fs.appendFile(
       `${__dirname}/Log/${date}.log`,
-      `ERROR: ${moment()} ${message} ${os.EOL}`,
+      `ERROR: ${moment().format()} ${message} ${os.EOL}`,
       err => {
         if (err) {
           error(err.message);
@@ -148,7 +148,7 @@ export const fatal = (message: string): void => {
     const date = moment().format('YYYYMMDD');
     fs.appendFile(
       `${__dirname}/Log/${date}.log`,
-      `FATAL: ${moment()} ${message} ${os.EOL}`,
+      `FATAL: ${moment().format()} ${message} ${os.EOL}`,
       err => {
         if (err) {
           error(err.message);

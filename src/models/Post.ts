@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 export interface IPost extends mongoose.Document {
   body: string;
-  category: string;
+  category: mongoose.Schema.Types.ObjectId;
   created_at: Date;
   poster: mongoose.Schema.Types.ObjectId;
   topic: mongoose.Schema.Types.ObjectId;

@@ -27,3 +27,4 @@ yarn-error.log*
 /public
 /logging/Log
 /Log
+/src/logging/Log

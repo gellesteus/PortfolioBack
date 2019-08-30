@@ -99,45 +99,52 @@ router.post(
 router.post('/pass', (req: Request, res: Response): void => {
   User.findOne({ email: req.body.email })
     .then(user => {
-      /* Generate the new password */
-      const password = crypto.randomBytes(6).toString('hex');
-      bcrypt.genSalt(10, (err: Error, result: string) =>
-        bcrypt.hash(password, result, (e: Error, r: string) => {
-          if (e) {
-            log.error(e.message);
-            res.status(500).json({
-              message: 'An unknown error occured',
-              success: false
-            });
-            return;
-          }
-
-          user.password = r;
-          user.session_token = null;
-          user.must_change_password = true;
-
-          user
-            .save()
-            .then(() =>
-              res.json({
-                message: 'Password reset request accepted',
-                success: true
-              })
-            )
-            .catch((error: Error) => {
-              log.error(error.message);
+      if (user) {
+        /* Generate the new password */
+        const password = crypto.randomBytes(6).toString('hex');
+        bcrypt.genSalt(10, (err: Error, result: string) =>
+          bcrypt.hash(password, result, (e: Error, r: string) => {
+            if (e) {
+              log.error(e.message);
               res.status(500).json({
                 message: 'An unknown error occured',
                 success: false
               });
-            });
-        })
-      );
-      /* Send the email with the password to the user */
-      /* Update the requirement to change the password on the next login */
+              return;
+            }
+
+            user.password = r;
+            user.session_token = null;
+            user.must_change_password = true;
+
+            user
+              .save()
+              .then(() =>
+                res.json({
+                  message: 'Password reset request accepted',
+                  success: true
+                })
+              )
+              .catch((error: Error) => {
+                log.error(error.message);
+                res.status(500).json({
+                  message: 'An unknown error occured',
+                  success: false
+                });
+              });
+          })
+        );
+        /* Send the email with the password to the user */
+        /* Update the requirement to change the password on the next login */
+      } else {
+        res.status(404).json({
+          message: 'The requested resource was not found on the server',
+          success: false
+        });
+      }
     })
     .catch((e: Error) =>
-      res.json({
+      res.status(404).json({
         message: 'Username not found',
         success: false
       })
@@ -154,7 +161,7 @@ router.use('/', updateLastOnline);
 router.put(
   '/pass',
   async (req: Request, res: Response): Promise<void> => {
-    const token: string = req.get('authorization');
+    const token = req.get('authorization');
     const salt = await bcrypt.genSalt(10);
     const pass = await bcrypt.hash(req.body.password, salt);
     User.findOne({
@@ -265,31 +272,39 @@ router.delete('/:id', (req: Request, res: Response): void => {
 router.put('/:id', (req, res) => {
   User.findById(req.params.id)
     .then(user => {
-      user.username = req.body.username || user.username;
-      user.role = req.body.role || user.role;
-      user.session_token = null;
-      user
-        .save()
-        .then(updUser =>
-          res.json({
-            message: 'User updated successfully',
-            success: true,
-            user: updUser
-          })
-        )
-        .catch(e =>
-          res.status(500).json({
-            message: 'An unknown error occured',
-            success: false
-          })
-        );
+      if (user) {
+        user.username = req.body.username || user.username;
+        user.role = req.body.role || user.role;
+        user.session_token = null;
+        user
+          .save()
+          .then(updUser =>
+            res.json({
+              message: 'User updated successfully',
+              success: true,
+              user: updUser
+            })
+          )
+          .catch(e =>
+            res.status(500).json({
+              message: 'An unknown error occured',
+              success: false
+            })
+          );
+      } else {
+        res.status(404).json({
+          message: 'The requested resource was not found on the server',
+          success: false
+        });
+      }
     })
-    .catch(e =>
+    .catch(e => {
+      log.error(e.message);
       res.status(404).json({
         message: 'The requested resource was not found on the server',
         success: false
-      })
-    );
+      });
+    });
 });
 
 export default router;

@@ -56,7 +56,7 @@ export interface IUser extends mongoose.Document {
   must_change_password: boolean;
   password: string;
   role: string;
-  session_token: string;
+  session_token: string | null;
   username: string;
   validated: boolean;
 }

@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { Router } from 'express';
 import { Request, Response } from 'express';
 import { UploadedFile } from 'express-fileupload';
@@ -5,7 +6,7 @@ import * as log from '../../logging/logging';
 import authorization from '../../middleware/api/authorization';
 import notBanned from '../../middleware/api/notBanned';
 import validated from '../../middleware/api/requireValidatedAccount';
-import User from '../../models/User';
+import User, { IUser } from '../../models/User';
 
 const router = Router();
 
@@ -20,18 +21,40 @@ router.post(
       res.status(400).json({ success: false, message: 'No file found' });
       return;
     } else {
-      const user = await User.findOne({
+      if (!req.files.file) {
+        res.status(400).json({ success: false, message: 'No file found' });
+        return;
+      }
+      const tempUser = await User.findOne({
         session_token: req.get('authorization')
       });
+      let user: IUser;
+      if (tempUser) {
+        user = tempUser;
+      } else {
+        res
+          .status(404)
+          .json({ message: 'An unknown error occured', success: false });
+        return;
+      }
+
       let file: UploadedFile;
       if (Array.isArray(req.files.file)) {
-        file = req.files.file.pop();
+        const temp = req.files.file.pop();
+        if (temp) {
+          file = temp;
+        } else {
+          res.status(400).json({ success: false, message: 'No file found' });
+          return;
+        }
       } else {
         file = req.files.file;
       }
       if (file.truncated) {
         res.status(400).json({
-          message: `File too large. Max size is ${+process.env.MAX_FILE_SIZE /
+          message: `File too large. Max size is ${+(
+            process.env.MAX_FILE_SIZE || 0
+          ) /
             1024 /
             1024} MB`,
           success: false
@@ -41,7 +64,7 @@ router.post(
       /* Administrators can upload as many files as they want. other users are limited */
       if (
         user.role !== 'admin' &&
-        user.file_count > +process.env.MAX_FILE_COUNT
+        user.file_count > +(process.env.MAX_FILE_COUNT || 1)
       ) {
         res.status(400).json({
           message:
@@ -68,7 +91,7 @@ router.post(
           /* Save the image model */
 
           res.json({
-            fileName: req.files.name,
+            fileName: file.name,
             filePath: path,
             message: 'File uploaded successfully',
             success: true

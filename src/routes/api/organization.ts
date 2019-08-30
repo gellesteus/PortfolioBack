@@ -167,28 +167,29 @@ router.put('/:id', (req, res) => {
             message: 'Resource was not found',
             sucess: false
           });
+        } else {
+          org.name = req.body.name || org.name;
+          org.members = req.body.members || org.members;
+          org.holding = req.body.holdings || org.holding;
+          org.shortDesc = req.body.shortDesc || org.shortDesc;
+          org.longDesc = req.body.longDesc || org.longDesc;
+          org
+            .save()
+            .then(newOrg => {
+              res.json({
+                message: 'Organization updated successfully',
+                organization: newOrg,
+                success: true
+              });
+            })
+            .catch((e: Error) => {
+              log.error(e.message);
+              res.status(500).json({
+                message: 'An unknown error occured',
+                success: false
+              });
+            });
         }
-        org.name = req.body.name || org.name;
-        org.members = req.body.members || org.members;
-        org.holding = req.body.holdings || org.holding;
-        org.shortDesc = req.body.shortDesc || org.shortDesc;
-        org.longDesc = req.body.longDesc || org.longDesc;
-        org
-          .save()
-          .then(newOrg => {
-            res.json({
-              message: 'Organization updated successfully',
-              organization: newOrg,
-              success: true
-            });
-          })
-          .catch((e: Error) => {
-            log.error(e.message);
-            res.status(500).json({
-              message: 'An unknown error occured',
-              success: false
-            });
-          });
       })
       .catch((e: Error) => {
         log.error(e.message);
