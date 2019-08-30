@@ -29,8 +29,8 @@ export default async (
         });
       }
     })
-    .catch(e => {
-      log.error(e);
+    .catch((e: Error) => {
+      log.error(e.message);
       res.status(500).json({
         message: 'An unknown error has occurred',
         success: false

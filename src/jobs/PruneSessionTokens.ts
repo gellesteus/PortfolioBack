@@ -9,7 +9,7 @@ export default async (): Promise<void> => {
   const users = await User.find({ last_online: { $lt: date } }).exec();
   for (const user in users) {
     if (users[user]) {
-      users[user].session_token = '';
+      users[user].session_token = null;
       await users[user].save();
     }
   }
