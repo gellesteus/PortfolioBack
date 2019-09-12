@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Level as ELevel } from '../components/error/Alert';
+=======
+import { level as ELevel } from '../components/helper/Alert';
+>>>>>>> 73ff7058d85f43b81bee64c586d3d4b337561ea0
 import { ActionTypes, IAction } from './action';
 
 export function logIn(user: any): IAction {
