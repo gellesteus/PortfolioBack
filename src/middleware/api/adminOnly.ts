@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 import User from '../../models/User';
 
 export default async (
@@ -19,13 +19,13 @@ export default async (
           log.warn('Admin resource request access denied');
           res.status(403).json({
             message: 'You are not authorized to access this resource',
-            success: false
+            success: false,
           });
         }
       } else {
         res.status(403).json({
           message: 'User not found',
-          success: false
+          success: false,
         });
       }
     })
@@ -33,7 +33,7 @@ export default async (
       log.error(e.message);
       res.status(500).json({
         message: 'An unknown error has occurred',
-        success: false
+        success: false,
       });
     });
 };

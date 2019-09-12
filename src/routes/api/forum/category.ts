@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
-import * as log from '../../../logging/logging';
+import * as log from '../../../logging/log';
 import adminOnly from '../../../middleware/api/adminOnly';
 import authorization from '../../../middleware/api/authorization';
 import Cache from '../../../middleware/api/Cache';
@@ -25,14 +25,14 @@ router.get('/', Cache.retrieve, (req: Request, res: Response): void => {
       Cache.cache(60)(req, res, {
         categories,
         message: 'Categories retrieved successfully',
-        success: true
+        success: true,
       });
     })
     .catch((e: Error) => {
       log.error(e.message);
       res.status(500).json({
         message: e.message || 'An unknown error occured',
-        success: false
+        success: false,
       });
     });
 });
@@ -48,7 +48,7 @@ router.get('/:id', Cache.retrieve, (req: Request, res: Response): void => {
         log.debug('Category not found');
         res.status(403).json({
           message: 'Resource was not found',
-          sucess: false
+          sucess: false,
         });
         return;
       }
@@ -56,14 +56,14 @@ router.get('/:id', Cache.retrieve, (req: Request, res: Response): void => {
       Cache.cache(60)(req, res, {
         category,
         message: 'Category retrieved successfully',
-        success: true
+        success: true,
       });
     })
     .catch((e: Error) => {
       log.error(e.message);
       res.status(500).json({
         message: 'Invalid category ID given',
-        success: false
+        success: false,
       });
     });
 });
@@ -81,7 +81,7 @@ router.post('/', (req: Request, res: Response): void => {
     desc: req.body.desc,
     name: req.body.name,
     position: req.body.position,
-    section: req.body.section
+    section: req.body.section,
   })
     .save()
     .then(category => {
@@ -89,14 +89,14 @@ router.post('/', (req: Request, res: Response): void => {
       res.json({
         category,
         message: 'Category created successfully',
-        success: true
+        success: true,
       });
     })
     .catch((e: Error) => {
       log.error(e.message);
       res.status(500).json({
         message: e.message || 'An unknown error occured',
-        success: false
+        success: false,
       });
     });
 });
@@ -127,14 +127,14 @@ router.put('/:id', (req: Request, res: Response): void => {
             res.json({
               category: savedCat,
               message: 'Category updated successfully',
-              success: true
+              success: true,
             });
           })
           .catch((e: Error) => {
             log.error(e.message);
             res.status(500).json({
               message: 'An unknown error occured',
-              success: false
+              success: false,
             });
           });
       })
@@ -142,7 +142,7 @@ router.put('/:id', (req: Request, res: Response): void => {
         log.error(e.message);
         res.status(500).json({
           message: 'An unknown error occured',
-          success: false
+          success: false,
         });
       });
   } catch (e) {
@@ -164,7 +164,7 @@ router.delete(
         log.info('Category not found');
         res.status(404).json({
           message: 'Resource not found',
-          success: false
+          success: false,
         });
         return;
       }
@@ -187,21 +187,21 @@ router.delete(
           log.info('Category deleted successfully');
           res.json({
             message: 'Category deleted successfully',
-            success: true
+            success: true,
           });
         })
         .catch((e: Error) => {
           log.error(e.message);
           res.status(500).json({
             message: 'An unknown error occured',
-            success: false
+            success: false,
           });
         });
     } catch (e) {
       log.error(e.message);
       res.status(404).json({
         message: 'Category not found',
-        success: false
+        success: false,
       });
     }
   }

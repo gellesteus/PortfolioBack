@@ -1,8 +1,7 @@
-import 'dotenv/config';
 import { Router } from 'express';
 import { Request, Response } from 'express';
 import { UploadedFile } from 'express-fileupload';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 import authorization from '../../middleware/api/authorization';
 import notBanned from '../../middleware/api/notBanned';
 import validated from '../../middleware/api/requireValidatedAccount';
@@ -26,7 +25,7 @@ router.post(
         return;
       }
       const tempUser = await User.findOne({
-        session_token: req.get('authorization')
+        session_token: req.get('authorization'),
       });
       let user: IUser;
       if (tempUser) {
@@ -57,7 +56,7 @@ router.post(
           ) /
             1024 /
             1024} MB`,
-          success: false
+          success: false,
         });
         return;
       }
@@ -69,7 +68,7 @@ router.post(
         res.status(400).json({
           message:
             'You have uploaded too many files. Please delete some of your existing files before uploading more',
-          success: false
+          success: false,
         });
         return;
       }
@@ -80,7 +79,7 @@ router.post(
           log.error(e.message);
           res.status(500).json({
             message: e.message || 'An unknown error occured',
-            success: false
+            success: false,
           });
         } else {
           const path = '';
@@ -94,7 +93,7 @@ router.post(
             fileName: file.name,
             filePath: path,
             message: 'File uploaded successfully',
-            success: true
+            success: true,
           });
         }
       });
@@ -105,7 +104,7 @@ router.post(
 router.delete('/:id', (req: Request, res: Response): void => {
   res.send({
     message: 'Function not implemented',
-    success: false
+    success: false,
   });
 });
 

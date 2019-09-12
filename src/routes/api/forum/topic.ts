@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import * as log from '../../../logging/logging';
+import * as log from '../../../logging/log';
 import authorization from '../../../middleware/api/authorization';
 import Cache from '../../../middleware/api/Cache';
 import updateLastOnline from '../../../middleware/api/updateLastOnline';
@@ -43,7 +43,7 @@ router.get(
     let user: IUser;
 
     const temp = await User.findOne({
-      session_token: req.get('authorization')
+      session_token: req.get('authorization'),
     });
 
     if (temp) {
@@ -51,7 +51,7 @@ router.get(
     } else {
       res.status(404).json({
         message: 'The requested resource was not found on the server',
-        success: false
+        success: false,
       });
       return;
     }
@@ -63,19 +63,19 @@ router.get(
 
     Topic.find({ poster: userID }, null, {
       limit: count,
-      sort: { [sortCol]: sortOrder }
+      sort: { [sortCol]: sortOrder },
     })
       .then(topics => {
         res.json({
           message: 'Topics retrieved successfully',
           success: true,
-          topics
+          topics,
         });
       })
       .catch((e: Error) =>
         res.status(500).json({
           message: e.message || 'An unknown error occured',
-          success: false
+          success: false,
         })
       );
   }
@@ -92,7 +92,7 @@ router.post(
     let user: IUser;
 
     const temp = await User.findOne({
-      session_token: req.get('authorization')
+      session_token: req.get('authorization'),
     });
 
     if (temp) {
@@ -100,14 +100,14 @@ router.post(
     } else {
       res.status(404).json({
         message: 'The requested resource was not found on the server',
-        success: false
+        success: false,
       });
       return;
     }
 
     new Topic({
       category: req.body.category,
-      title: req.body.title
+      title: req.body.title,
     })
       .save()
       .then(topic => {
@@ -116,7 +116,7 @@ router.post(
           body: req.body.body,
           category: topic.category,
           poster: user._id,
-          topic: topic._id
+          topic: topic._id,
         })
           .save()
           .then(post => {
@@ -127,27 +127,27 @@ router.post(
                 res.json({
                   messaage: 'Topic created successfully',
                   success: true,
-                  topic: newTopic
+                  topic: newTopic,
                 })
               )
               .catch((e: Error) =>
                 res.status(500).json({
                   message: e.message || 'an unknown error occured',
-                  success: false
+                  success: false,
                 })
               );
           })
           .catch((e: Error) =>
             res.status(500).json({
               message: e.message || 'an unknown error occured',
-              success: false
+              success: false,
             })
           );
       })
       .catch((e: Error) =>
         res.status(500).json({
           message: e.message || 'an unknown error occured',
-          success: false
+          success: false,
         })
       );
   }
@@ -164,20 +164,20 @@ router.get('/:id', Cache.retrieve, (req: Request, res: Response): void => {
       if (!topic) {
         res.status(403).json({
           message: 'Resource was not found',
-          sucess: false
+          sucess: false,
         });
         return;
       }
       Cache.cache(60)(req, res, {
         message: 'entry successfully retreived',
         success: true,
-        topic
+        topic,
       });
     });
   } catch (e) {
     res.status(404).json({
       message: 'Entry not found',
-      success: false
+      success: false,
     });
   }
 });
@@ -199,7 +199,7 @@ router.delete(
     } else {
       res.status(404).json({
         message: 'The requested resource was not found on the server',
-        success: false
+        success: false,
       });
       return;
     }
@@ -207,7 +207,7 @@ router.delete(
     let user: IUser;
 
     const tempUser = await User.findOne({
-      session_token: req.get('authorization')
+      session_token: req.get('authorization'),
     });
 
     if (tempUser) {
@@ -215,7 +215,7 @@ router.delete(
     } else {
       res.status(404).json({
         message: 'The requested resource was not found on the server',
-        success: false
+        success: false,
       });
       return;
     }
@@ -233,7 +233,7 @@ router.delete(
     if (!canAccess) {
       res.status(403).json({
         message: 'You do not have persmission to perform this action',
-        success: false
+        success: false,
       });
     } else {
       if (!topic) {
@@ -253,7 +253,7 @@ router.delete(
           res.json({
             message: 'Topic deleted successfully',
             postCount,
-            success: true
+            success: true,
           })
         );
       }
@@ -284,7 +284,7 @@ router.put('/:id', (req: Request, res: Response): void => {
         } else {
           res.status(404).json({
             message: 'The requested resource was not found on the server',
-            success: false
+            success: false,
           });
           return;
         }
@@ -295,13 +295,13 @@ router.put('/:id', (req: Request, res: Response): void => {
           res.json({
             message: 'Topic updated successfully',
             success: true,
-            topic: newTopic
+            topic: newTopic,
           })
         )
         .catch(e =>
           res.status(500).json({
             message: e.message || 'An unknown error occured',
-            success: false
+            success: false,
           })
         );
     }

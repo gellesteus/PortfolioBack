@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { Router } from 'express';
 import { Request, Response } from 'express';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 import adminOnly from '../../middleware/api/adminOnly';
 import authorization from '../../middleware/api/authorization';
 import updateLastOnline from '../../middleware/api/updateLastOnline';
@@ -19,7 +19,7 @@ router.post('/login', (req: Request, res: Response): void => {
   if (!email || !password) {
     res.status(400).json({
       message: 'Please enter your email and password',
-      success: false
+      success: false,
     });
   } else {
     User.findOne({ email })
@@ -36,27 +36,27 @@ router.post('/login', (req: Request, res: Response): void => {
                 res.json({
                   message: 'User logged in successfully',
                   success: true,
-                  user
+                  user,
                 })
               );
             } else {
               res.status(403).json({
                 message: 'Invalid username or password',
-                success: false
+                success: false,
               });
             }
           });
         } else {
           res.status(403).json({
             message: 'Invalid username or password',
-            success: false
+            success: false,
           });
         }
       })
       .catch(e =>
         res.status(403).json({
           message: 'Invalid username or password',
-          success: false
+          success: false,
         })
       );
   }
@@ -74,20 +74,20 @@ router.post(
       email: req.body.email,
       last_online: new Date(),
       password: pass,
-      username: req.body.username
+      username: req.body.username,
     })
       .save()
       .then(user =>
         res.json({
           message: 'User created successfully',
           success: true,
-          user
+          user,
         })
       )
       .catch(e =>
         res.status(500).json({
           message: e.message || 'an unknown error occured',
-          success: false
+          success: false,
         })
       );
   }
@@ -108,7 +108,7 @@ router.post('/pass', (req: Request, res: Response): void => {
               log.error(e.message);
               res.status(500).json({
                 message: 'An unknown error occured',
-                success: false
+                success: false,
               });
               return;
             }
@@ -122,14 +122,14 @@ router.post('/pass', (req: Request, res: Response): void => {
               .then(() =>
                 res.json({
                   message: 'Password reset request accepted',
-                  success: true
+                  success: true,
                 })
               )
               .catch((error: Error) => {
                 log.error(error.message);
                 res.status(500).json({
                   message: 'An unknown error occured',
-                  success: false
+                  success: false,
                 });
               });
           })
@@ -139,14 +139,14 @@ router.post('/pass', (req: Request, res: Response): void => {
       } else {
         res.status(404).json({
           message: 'The requested resource was not found on the server',
-          success: false
+          success: false,
         });
       }
     })
     .catch((e: Error) =>
       res.status(404).json({
         message: 'Username not found',
-        success: false
+        success: false,
       })
     );
 });
@@ -165,13 +165,13 @@ router.put(
     const salt = await bcrypt.genSalt(10);
     const pass = await bcrypt.hash(req.body.password, salt);
     User.findOne({
-      session_token: token
+      session_token: token,
     }).then(user => {
       if (user) {
         if (!bcrypt.compareSync(req.body.oldPassword, user.password)) {
           res.status(400).json({
             message: 'An invalid password was entered',
-            success: false
+            success: false,
           });
         }
         user.password = pass;
@@ -182,13 +182,13 @@ router.put(
           res.send({
             message: 'Password updated successfully',
             success: true,
-            user: updUser
+            user: updUser,
           })
         );
       } else {
         res.status(404).json({
           message: 'User not found',
-          success: false
+          success: false,
         });
       }
     });
@@ -207,19 +207,19 @@ router.post('/logout', (req: Request, res: Response): void => {
         user.save();
         res.json({
           message: 'User logged out successfully',
-          success: true
+          success: true,
         });
       } else {
         res.status(403).json({
           message: 'User not found',
-          success: false
+          success: false,
         });
       }
     })
     .catch((e: Error) =>
       res.status(500).json({
         message: 'An unknown error occured',
-        success: false
+        success: false,
       })
     );
 });
@@ -234,12 +234,12 @@ router.get('/', (req: Request, res: Response): void => {
       res.json({
         message: 'user retrieved successfully',
         success: true,
-        user
+        user,
       });
     } else {
       res.status(404).json({
         message: 'User not found',
-        success: false
+        success: false,
       });
     }
   });
@@ -255,13 +255,13 @@ router.delete('/:id', (req: Request, res: Response): void => {
     .then(() =>
       res.json({
         message: 'User deleted successfully',
-        success: true
+        success: true,
       })
     )
     .catch(e =>
       res.status(404).json({
         message: 'The requested resource was not found on the server',
-        success: false
+        success: false,
       })
     );
 });
@@ -282,19 +282,19 @@ router.put('/:id', (req, res) => {
             res.json({
               message: 'User updated successfully',
               success: true,
-              user: updUser
+              user: updUser,
             })
           )
           .catch(e =>
             res.status(500).json({
               message: 'An unknown error occured',
-              success: false
+              success: false,
             })
           );
       } else {
         res.status(404).json({
           message: 'The requested resource was not found on the server',
-          success: false
+          success: false,
         });
       }
     })
@@ -302,7 +302,7 @@ router.put('/:id', (req, res) => {
       log.error(e.message);
       res.status(404).json({
         message: 'The requested resource was not found on the server',
-        success: false
+        success: false,
       });
     });
 });

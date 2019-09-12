@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 import CSRF from '../../models/CSRF';
 
 export default async (

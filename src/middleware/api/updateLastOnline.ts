@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 import User from '../../models/User';
 
 /*  Update the last time a user was online */
@@ -7,7 +7,7 @@ export default (req: Request, res: Response, next: () => void): void => {
   /* Find the user from the token */
   const token = req.get('authorization') || '';
   User.findOne({
-    session_token: token
+    session_token: token,
   })
     .then(user => {
       if (user) {
@@ -18,7 +18,7 @@ export default (req: Request, res: Response, next: () => void): void => {
         log.warn('User was not found when updating last online');
         res.status(404).json({
           message: 'User not found',
-          success: false
+          success: false,
         });
       }
     })
@@ -26,7 +26,7 @@ export default (req: Request, res: Response, next: () => void): void => {
       log.error(e);
       res.status(404).json({
         message: `Unknown error ${e}`,
-        success: false
+        success: false,
       });
     });
 };

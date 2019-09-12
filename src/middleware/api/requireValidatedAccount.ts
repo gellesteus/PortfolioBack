@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 import User from '../../models/User';
 
 /* Middleware to prevent banned users from accessing the protected resource */
@@ -18,7 +18,7 @@ export default (req: Request, res: Response, next: () => void): void => {
           res.status(403).json({
             message:
               'Accounts that have not been validated cannot perform this action',
-            success: false
+            success: false,
           });
         }
       } else {
@@ -27,7 +27,7 @@ export default (req: Request, res: Response, next: () => void): void => {
         );
         res.status(403).json({
           message: 'You do not have permission to access this resource',
-          success: false
+          success: false,
         });
       }
     })

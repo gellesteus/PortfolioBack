@@ -1,4 +1,4 @@
-import * as log from '../logging/logging';
+import * as log from '../logging/log';
 
 interface IJobSched {
   period: number;

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 import adminOnly from '../../middleware/api/adminOnly';
 import authorization from '../../middleware/api/authorization';
 import Cache from '../../middleware/api/Cache';
@@ -36,8 +36,8 @@ router.get(
       limit: count,
       skip: toSkip,
       sort: {
-        [sortCol]: sortOrder
-      }
+        [sortCol]: sortOrder,
+      },
     })
       .then(organizations => {
         Cache.cache(3600)(req, res, {
@@ -49,14 +49,14 @@ router.get(
           page: page + 1,
           pages,
           sortCol,
-          success: true
+          success: true,
         });
       })
       .catch((e: Error) => {
         log.error(e.message);
         res.status(500).json({
           message: e.message || 'An unknown error occured',
-          success: false
+          success: false,
         });
       });
   }
@@ -72,19 +72,19 @@ router.get('/:id', Cache.retrieve, (req: Request, res: Response): void => {
         Cache.cache(3600)(req, res, {
           message: 'Organization retrieved successfully',
           organization: org,
-          success: true
+          success: true,
         });
       } else {
         res.status(404).json({
           message: 'Resource not found',
-          success: false
+          success: false,
         });
       }
     })
     .catch(e => {
       res.status(500).json({
         message: e.message || 'An unknown error has occured',
-        success: false
+        success: false,
       });
     });
 });
@@ -103,27 +103,27 @@ router.post('/', (req: Request, res: Response): void => {
       longDesc: req.body.longDesc,
       members: req.body.members,
       name: req.body.name,
-      shortDesc: req.body.shortDesc
+      shortDesc: req.body.shortDesc,
     })
       .save()
       .then(org => {
         res.json({
           message: 'Organization created successfully',
           organization: org,
-          success: true
+          success: true,
         });
       })
       .catch((e: Error) => {
         log.error(e.message);
         res.status(500).json({
           message: e.message || 'An unknown error occured',
-          success: false
+          success: false,
         });
       });
   } catch (e) {
     res.status(500).json({
       message: e.message || 'An unknown error occured',
-      success: false
+      success: false,
     });
   }
 });
@@ -137,20 +137,20 @@ router.delete('/:id', (req: Request, res: Response): void => {
       .then(() => {
         res.json({
           message: 'Item deleted successfully',
-          success: true
+          success: true,
         });
       })
       .catch(e => {
         log.error(e.message);
         res.status(500).json({
           message: 'An unknown error occured',
-          success: false
+          success: false,
         });
       });
   } catch (e) {
     res.status(500).json({
       message: 'An unknown error occured',
-      success: false
+      success: false,
     });
   }
 });
@@ -165,7 +165,7 @@ router.put('/:id', (req, res) => {
         if (!org) {
           res.status(403).json({
             message: 'Resource was not found',
-            sucess: false
+            sucess: false,
           });
         } else {
           org.name = req.body.name || org.name;
@@ -179,14 +179,14 @@ router.put('/:id', (req, res) => {
               res.json({
                 message: 'Organization updated successfully',
                 organization: newOrg,
-                success: true
+                success: true,
               });
             })
             .catch((e: Error) => {
               log.error(e.message);
               res.status(500).json({
                 message: 'An unknown error occured',
-                success: false
+                success: false,
               });
             });
         }
@@ -195,13 +195,13 @@ router.put('/:id', (req, res) => {
         log.error(e.message);
         res.status(500).json({
           message: 'An unknown error occured',
-          success: false
+          success: false,
         });
       });
   } catch (e) {
     res.status(500).json({
       message: 'An unknown error occured',
-      success: false
+      success: false,
     });
   }
 });

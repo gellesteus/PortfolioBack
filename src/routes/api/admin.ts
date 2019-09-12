@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 import Log from '../../models/Log';
 
 const router = Router();
@@ -40,14 +40,14 @@ router.get('/', (req: Request, res: Response): void => {
       res.json({
         logs,
         message: 'Logs retrieved successfully',
-        success: true
+        success: true,
       });
     })
     .catch((e: Error) => {
       log.error(e.message);
       res.status(500).json({
         message: e.message || 'An unknown error occured',
-        success: false
+        success: false,
       });
     });
 });
@@ -69,7 +69,7 @@ router.get(
       logCountDay,
       logCountHour,
       message: 'Overview retrieved successfully',
-      success: true
+      success: true,
     });
   }
 );

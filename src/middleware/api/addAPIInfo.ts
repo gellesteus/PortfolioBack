@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import mung from 'express-mung';
 import moment from 'moment';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 
 /* Add information about the API to all routes */
 export default mung.json(function transform(
@@ -12,7 +12,7 @@ export default mung.json(function transform(
   log.trace('API information added to response body');
   body.APIInfo = {
     APIVersion: process.env.API_VERSION,
-    RequestTime: moment().format()
+    RequestTime: moment().format(),
   };
   return body;
 });

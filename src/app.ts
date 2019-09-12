@@ -1,14 +1,12 @@
-import 'dotenv/config';
-
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import moment from 'moment';
 import mongoose from 'mongoose';
-import PruneSessionTokens from './jobs/PruneSessionTokens';
+import path from 'path';
 import Scheduler from './jobs/Scheduler';
-import * as log from './logging/logging';
+import * as log from './logging/log';
 import Accepts from './middleware/api/Accepts';
 import addAPIInfo from './middleware/api/addAPIInfo';
 import CSRFMiddleware from './middleware/api/CSRF';
@@ -25,7 +23,6 @@ import UserRouter from './routes/api/user';
 
 log.info('Server starting');
 const app: express.Application = express();
-const port: number = +(process.env.SERVER_PORT || 3001);
 
 /* Connect to the database */
 mongoose
@@ -45,7 +42,7 @@ mongoose.set('useCreateIndex', true);
 log.trace('Adding middleware');
 app.use(
   cors({
-    origin: 'http://localhost:3000'
+    origin: 'http://localhost:3000',
   })
 );
 
@@ -88,45 +85,50 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 /* Route for API Information */
-app.get('/', (req, res) => {
+app.get('/', (req: express.Request, res: express.Response) => {
   res.json({
     APIVersion: process.env.API_VERSION,
-    time: moment().format()
+    time: moment().format(),
   });
 });
 log.trace('Done adding middleware');
 
 log.trace('Registering routes');
+
+// Serve HTML
+app.use(express.static(path.resolve(__dirname, '../client/build')));
+
 /* Set up all routes */
-app.use('/user', UserRouter);
-app.use('/organization', OrganizationRouter);
-app.use('/forum', ForumRouter);
-app.use('/armory', ArmoryRouter);
-app.use('/character', CharacterRouter);
-app.use('/rule', RuleRouter);
-app.use('/bestiary', BestiaryRouter);
-app.use('/image', ImageRouter);
-app.use('/csrf', CSRFRouter);
+app.use('/api/user', UserRouter);
+app.use('/api/organization', OrganizationRouter);
+app.use('/api/forum', ForumRouter);
+app.use('/api/armory', ArmoryRouter);
+app.use('/api/character', CharacterRouter);
+app.use('/api/rule', RuleRouter);
+app.use('/api/bestiary', BestiaryRouter);
+app.use('/api/image', ImageRouter);
+app.use('/api/csrf', CSRFRouter);
+
+/* Let react router manage pages */
+app.get('*', (req: express.Request, res: express.Response) => {
+  res.sendFile(path.resolve(__dirname, '../client/build/index.html'));
+});
 
 /* Catch all unmanaged routes */
 app.all('*', (req: express.Request, res: express.Response) => {
   log.info('invalid uri accessed. Falling back to default route for request');
   res.status(404).json({
     message: 'The specified resource does not exist on the server',
-    success: false
+    success: false,
   });
 });
 log.trace('done registering routes');
 
 if (!!process.env.IS_WORKER === true) {
   log.debug('Server is a worker, enabling scheduler');
-  /* Schedule jobs */
-  Scheduler.schedule(PruneSessionTokens, 60, true);
 
   /* Start the scheduler */
   Scheduler.start(() => log.trace('Scheduler started'));
 }
 
-app.listen(port, () => {
-  log.info(`Server listening on port ${port}`);
-});
+export default app;

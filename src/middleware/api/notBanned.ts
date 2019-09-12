@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 import User from '../../models/User';
 
 /* Middleware to prevent banned users from accessing the protected resource */
@@ -17,14 +17,14 @@ export default (req: Request, res: Response, next: () => void): void => {
           log.info('Banned user attempted to access restricted resource');
           res.status(403).json({
             message: 'You do not have permission to access this resource',
-            success: false
+            success: false,
           });
         }
       } else {
         log.info('Banned user attempted to access restricted resource');
         res.status(403).json({
           message: 'You do not have permission to access this resource',
-          success: false
+          success: false,
         });
       }
     })

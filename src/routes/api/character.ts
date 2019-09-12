@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 import adminOnly from '../../middleware/api/adminOnly';
 import authorization from '../../middleware/api/authorization';
 import Cache from '../../middleware/api/Cache';
@@ -31,8 +31,8 @@ router.get(
       limit: count,
       skip: toSkip,
       sort: {
-        [sortCol]: sortOrder
-      }
+        [sortCol]: sortOrder,
+      },
     })
       .then(chars => {
         Cache.cache(3600)(req, res, {
@@ -44,14 +44,14 @@ router.get(
           page: page + 1,
           pages,
           sortColumn: sortCol,
-          success: true
+          success: true,
         });
       })
       .catch((e: Error) => {
         log.error(e.message);
         res.status(500).json({
           message: e.message || 'An unknown error occured',
-          success: false
+          success: false,
         });
       });
   }
@@ -67,28 +67,28 @@ router.get('/:id', Cache.retrieve, (req: Request, res: Response): void => {
         if (!char) {
           res.status(403).json({
             message: 'Resource was not found',
-            sucess: false
+            sucess: false,
           });
           return;
         }
         Cache.cache(60)(req, res, {
           character: char,
           message: 'Character retrieved successfully',
-          success: true
+          success: true,
         });
       })
       .catch((e: Error) => {
         log.error(e.message);
         res.status(500).json({
           message: e.message || 'An unknown error occured',
-          success: false
+          success: false,
         });
       });
   } catch (e) {
     log.error(e.message);
     res.status(500).json({
       message: e.message || 'An unknown error has occured',
-      success: false
+      success: false,
     });
   }
 });
@@ -108,21 +108,21 @@ router.post('/', (req: Request, res: Response): void => {
     ideals: req.body.ideals,
     known: req.body.known,
     name: req.body.name,
-    secrets: req.body.secrets
+    secrets: req.body.secrets,
   })
     .save()
     .then(char => {
       res.json({
         character: char,
         message: 'Character created successfully',
-        success: true
+        success: true,
       });
     })
     .catch(e => {
       log.error(e.message);
       res.status(500).json({
         message: e.message || 'An unknown error occured',
-        success: true
+        success: true,
       });
     });
 });
@@ -137,27 +137,27 @@ router.put('/:id', (req: Request, res: Response): void => {
         if (!char) {
           res.status(403).json({
             message: 'Resource was not found',
-            sucess: false
+            sucess: false,
           });
           return;
         }
         res.json({
           character: char,
           message: 'Character created successfully',
-          success: true
+          success: true,
         });
       })
       .catch((e: Error) => {
         log.error(e.message);
         res.status(500).json({
           message: 'An unknown error occured',
-          success: false
+          success: false,
         });
       });
   } catch (e) {
     res.status(404).json({
       message: 'An unknown error occured',
-      success: false
+      success: false,
     });
   }
 });
@@ -171,19 +171,19 @@ router.delete('/:id', (req: Request, res: Response): void => {
       .then(() => {
         res.json({
           message: 'Character deleted successfully',
-          success: true
+          success: true,
         });
       })
       .catch((e: Error) => {
         res.status(500).json({
           message: 'An unknown error occured',
-          success: false
+          success: false,
         });
       });
   } catch (e) {
     res.status(404).json({
       message: 'The requested resource was not found on the server',
-      success: false
+      success: false,
     });
   }
 });

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 import adminOnly from '../../middleware/api/adminOnly';
 import authorization from '../../middleware/api/authorization';
 import Cache from '../../middleware/api/Cache';
@@ -32,8 +32,8 @@ router.get(
       limit: count,
       skip: toSkip,
       sort: {
-        [sortCol]: sortOrder
-      }
+        [sortCol]: sortOrder,
+      },
     })
       .then(beasts => {
         Cache.cache(3600)(req, res, {
@@ -45,13 +45,13 @@ router.get(
           page: page + 1,
           pages,
           sortColumn: sortCol,
-          success: true
+          success: true,
         });
       })
       .catch(e => {
         res.status(500).json({
           message: e.message || 'An unknown error occured',
-          success: false
+          success: false,
         });
       });
   }
@@ -72,13 +72,13 @@ router.get('/:id', (req: Request, res: Response): void => {
       res.json({
         beast,
         message: 'entry successfully retreived',
-        success: true
+        success: true,
       });
     })
     .catch((e: Error) => {
       res.status(500).json({
         message: e.message || 'An unknown error occured',
-        success: false
+        success: false,
       });
     });
 });
@@ -93,20 +93,20 @@ router.post('/', (req: Request, res: Response): void => {
     images: req.body.images,
     longDesc: req.body.longDesc,
     name: req.body.name,
-    shortDesc: req.body.shortDesc
+    shortDesc: req.body.shortDesc,
   })
     .save()
     .then(beast =>
       res.json({
         beast,
         message: 'Monster created successfully',
-        success: true
+        success: true,
       })
     )
     .catch(e =>
       res.status(500).json({
         message: e.message || 'An unknown error occured',
-        success: false
+        success: false,
       })
     );
 });
@@ -120,7 +120,7 @@ router.put('/:id', (req: Request, res: Response): void => {
       if (!beast) {
         res.status(404).json({
           message: 'Resource was not found on the server',
-          success: false
+          success: false,
         });
         return;
       }
@@ -134,7 +134,7 @@ router.put('/:id', (req: Request, res: Response): void => {
           res.json({
             beast: newBeast,
             message: 'Monster updated successfully',
-            success: true
+            success: true,
           })
         )
         .catch((e: Error) => {
@@ -148,7 +148,7 @@ router.put('/:id', (req: Request, res: Response): void => {
       log.error(e.message);
       res.status(404).json({
         message: 'The requested resource was not found on the server',
-        success: false
+        success: false,
       });
     });
 });
@@ -165,7 +165,7 @@ router.delete('/:id', (req: Request, res: Response): void => {
       log.error(e.message);
       res.status(404).json({
         message: 'The requested resource was not found on the server',
-        success: false
+        success: false,
       });
     });
 });

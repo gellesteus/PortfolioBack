@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import * as log from '../../../logging/logging';
+import * as log from '../../../logging/log';
 import authorization from '../../../middleware/api/authorization';
 import Cache from '../../../middleware/api/Cache';
 import updateLastOnline from '../../../middleware/api/updateLastOnline';
@@ -42,14 +42,14 @@ router.get(
     let user: IUser | undefined;
     try {
       user = await User.findOne({
-        session_token: req.get('authorization')
+        session_token: req.get('authorization'),
       }).then(u => {
         if (u) {
           return u;
         } else {
           res.status(404).json({
             message: 'The requested resource was not found on the server',
-            success: false
+            success: false,
           });
         }
       });
@@ -57,7 +57,7 @@ router.get(
       log.error(e.message);
       res.status(500).json({
         message: 'An unknown error occured',
-        success: false
+        success: false,
       });
     }
     if (user) {
@@ -68,20 +68,20 @@ router.get(
 
       Post.find({ poster: userID }, null, {
         limit: count,
-        sort: { [sortCol]: sortOrder }
+        sort: { [sortCol]: sortOrder },
       })
         .then(posts => {
           res.json({
             message: 'Posts retrieved successfully',
             posts,
-            success: true
+            success: true,
           });
         })
         .catch((e: Error) => {
           log.error(e.message);
           res.status(500).json({
             message: e.message || 'An unknown error occured',
-            success: false
+            success: false,
           });
         });
     }
@@ -100,13 +100,13 @@ router.post(
     let user: IUser;
 
     const tempUser = await User.findOne({
-      session_token: req.get('authorization')
+      session_token: req.get('authorization'),
     });
 
     if (!tempUser) {
       res.status(404).json({
         message: 'The requested resource was not found on the server',
-        success: false
+        success: false,
       });
       return;
     } else {
@@ -118,7 +118,7 @@ router.post(
     if (!tempTopic) {
       res.status(404).json({
         message: 'The requested resource was not found on the server',
-        success: false
+        success: false,
       });
       return;
     } else {
@@ -131,21 +131,21 @@ router.post(
       category: topic.category,
       message: req.body.message,
       poster: user._id,
-      topicId: topic._id
+      topicId: topic._id,
     })
       .save()
       .then(post =>
         res.json({
           message: 'Posted successfully',
           post,
-          success: true
+          success: true,
         })
       )
       .catch(e => {
         log.error(e);
         res.status(500).json({
           message: 'An unknown error has occured',
-          success: false
+          success: false,
         });
       });
   }
@@ -161,13 +161,13 @@ router.get('/:id', Cache.retrieve, (req: Request, res: Response): void => {
       if (!post) {
         res.status(403).json({
           message: 'Resource was not found',
-          sucess: false
+          sucess: false,
         });
       } else {
         Cache.cache(60)(req, res, {
           message: 'Post retrieved successfully',
           post,
-          success: true
+          success: true,
         });
       }
     })
@@ -195,7 +195,7 @@ router.delete(
         } else {
           res.status(404).json({
             message: 'The requested resource was not found on the server',
-            success: false
+            success: false,
           });
         }
       })
@@ -219,20 +219,20 @@ router.delete(
           if (!canDelete) {
             res.status(403).json({
               message: 'You do not have authorization to perform this action',
-              success: false
+              success: false,
             });
           } else {
             Post.findByIdAndDelete(req.params.id)
               .then(() => {
                 res.json({
                   message: 'Post deleted successfully',
-                  success: true
+                  success: true,
                 });
               })
               .catch((e: Error) => {
                 res.status(500).json({
                   message: 'An unknown error occured',
-                  success: false
+                  success: false,
                 });
               });
           }
@@ -241,7 +241,7 @@ router.delete(
       .catch((e: Error) => {
         res.status(404).json({
           message: 'Post does not exist',
-          success: false
+          success: false,
         });
       });
   }
@@ -264,7 +264,7 @@ router.put(
         } else {
           res.status(404).json({
             message: 'The requested resource was not found on the server',
-            success: false
+            success: false,
           });
         }
       })
@@ -292,7 +292,7 @@ router.put(
           } else {
             res.status(403).json({
               message: 'You do not have permission to do this',
-              success: false
+              success: false,
             });
           }
         };
@@ -306,14 +306,14 @@ router.put(
         } catch (e) {
           res.status(500).json({
             message: 'An unknown error has occured',
-            success: false
+            success: false,
           });
         }
       })
       .catch((e: Error) => {
         res.status(404).json({
           message: 'Post does not exist',
-          success: false
+          success: false,
         });
       });
   }

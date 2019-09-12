@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import mung from 'express-mung';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 
 /* Removes the password field */
 export default mung.json((body: any, req: Request, res: Response): any => {

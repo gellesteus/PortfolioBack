@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import redis from 'redis';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 
 let isConnected = false;
 
 const client = redis.createClient({
   password: process.env.REDIS_PASSWORD,
-  url: process.env.REDIS_URL
+  url: process.env.REDIS_URL,
 });
 
 client.on('connect', () => {
@@ -53,5 +53,5 @@ export default {
       });
     }
     next();
-  }
+  },
 };

@@ -12,16 +12,15 @@ export default mongoose.model<ILog>(
     created_at: {
       default: Date.now,
       expires: 259200,
-      type: Date
+      type: Date,
     },
     level: {
       default: 'info',
-      enum: ['trace', 'debug', 'info', 'warn', 'error', 'fatal'],
       required: true,
-      type: String
+      type: String,
     },
     message: {
-      type: String
-    }
+      type: String,
+    },
   })
 );

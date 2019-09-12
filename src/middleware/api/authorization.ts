@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as log from '../../logging/logging';
+import * as log from '../../logging/log';
 import User from '../../models/User';
 
 /* Routes protected by this middleware require a valid session token to access */
@@ -8,13 +8,13 @@ export default (req: Request, res: Response, next: () => void): void => {
     log.warn('Request rejected due to missing authorization');
     res.status(403).json({
       message: 'This operation requires a valid token',
-      success: false
+      success: false,
     });
   } else {
     /* Token is present */
     const token: string = req.get('authorization') || '';
     User.findOne({
-      session_token: token
+      session_token: token,
     })
       .then(user => {
         if (user) {
@@ -24,7 +24,7 @@ export default (req: Request, res: Response, next: () => void): void => {
           log.warn('Request rejected due to invalid session token');
           res.status(403).json({
             message: 'Invalid token sent',
-            success: false
+            success: false,
           });
         }
       })
@@ -32,7 +32,7 @@ export default (req: Request, res: Response, next: () => void): void => {
         log.error(e);
         res.status(500).json({
           message: 'An unknown error occurred',
-          success: false
+          success: false,
         });
       });
   }
