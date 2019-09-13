@@ -15,4 +15,5 @@ module.exports = {
     __filename: false,
   },
   plugins: [new webpack.IgnorePlugin(/^hiredis$/)],
+  devtool: 'source-map',
 };

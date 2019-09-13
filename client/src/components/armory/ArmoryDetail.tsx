@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import { useDispatch, useSelector } from 'react-redux';
-import { Level } from '../error/Alert';
+import { displayAlert } from '../../actions';
 import useCSRF from '../../hooks/useCSRF';
+import { Level } from '../error/Alert';
 import Gallery from '../layout/Gallery';
 import Loading from '../layout/Loading';
-import { displayAlert } from '../../actions';
+
 const cookies = new Cookies();
 
 export interface IParams {

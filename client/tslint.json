@@ -2,7 +2,6 @@
   "defaultSeverity": "error",
   "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
   "rules": {
-    "react-in-jsx-scope": true,
-    "no-console": false
+    "jsx-no-lambda": false
   }
 }

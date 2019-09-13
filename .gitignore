@@ -26,7 +26,7 @@ yarn-error.log*
 /public
 /logging/Log
 /Log
-src/**/.log
 /**/node_modules
 client/build
 bundle
+**/*.log
