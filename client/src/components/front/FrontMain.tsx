@@ -1,5 +1,6 @@
 import React from 'react';
 import SlidingBackground from '../layout/SlidingBackground';
+
 export default () => {
   return (
     <div className="content">
@@ -7,7 +8,6 @@ export default () => {
         left={() => {
           return (
             <>
-              <p style={{ color: 'white' }}>Hello there</p>
               <img
                 src="https://image.shutterstock.com/z/stock-vector-colorful-circles-background-1016858287.jpg"
                 alt=""
@@ -24,9 +24,6 @@ export default () => {
         right={() => {
           return (
             <>
-              <p style={{ left: '80%', position: 'absolute' }}>
-                Other hello there
-              </p>
               <img
                 src="https://image.shutterstock.com/z/stock-vector-creative-circle-abstract-vector-logo-design-template-1034603407.jpg"
                 alt=""

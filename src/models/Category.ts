@@ -6,7 +6,7 @@ export interface ICategory extends mongoose.Document {
   created_at: Date;
   section: string;
   topics: mongoose.Schema.Types.ObjectId[];
-  moderators: mongoose.Schema.Types.ObjectId;
+  moderators: mongoose.Schema.Types.ObjectId[];
 }
 
 export default mongoose.model<ICategory>(
@@ -14,31 +14,31 @@ export default mongoose.model<ICategory>(
   new mongoose.Schema({
     created_at: {
       default: Date.now,
-      type: Date
+      type: Date,
     },
     desc: {
       required: [true, 'Description is required'],
-      type: String
+      type: String,
     },
     moderators: {
       default: [],
-      type: [mongoose.Schema.Types.ObjectId]
+      type: [mongoose.Schema.Types.ObjectId],
     },
     name: {
       required: [true, 'Name is required'],
-      type: String
+      type: String,
     },
     postion: {
       default: 1,
-      type: Number
+      type: Number,
     },
     section: {
       default: null,
-      type: String
+      type: String,
     },
     topics: {
       default: [],
-      type: [mongoose.Schema.Types.ObjectId]
-    }
+      type: [mongoose.Schema.Types.ObjectId],
+    },
   })
 );

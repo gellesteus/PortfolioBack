@@ -2,11 +2,10 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import { Consumer } from '../../context';
 import useCSRF from '../hooks/useCSRF';
 import Loading from '../layout/Loading';
 import Pagination from '../layout/Pagination';
-
+import { useSelector } from 'react-redux';
 const cookies = new Cookies();
 const count = 10;
 
@@ -26,6 +25,8 @@ export default () => {
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState({ sortColumn: '_id', sortDirection: 1 });
   const token = useCSRF();
+  const role = useSelector((state: any) => state.userReducer.user.role);
+
   useEffect(() => {
     fetch(
       `http://localhost:3001/armory?page=${page}&count=${count}&sortColumn=${sort.sortColumn}&sortOrder=${sort.sortDirection}`,
@@ -94,13 +95,8 @@ export default () => {
               >
                 Date Created {glyph('created_at')}
               </th>
-              <Consumer>
-                {(value: any) =>
-                  value.state.user.role === 'admin' ? (
-                    <th>Admin Functions</th>
-                  ) : null
-                }
-              </Consumer>
+
+              {role === 'admin' ? <th>Admin Functions</th> : null}
             </tr>
           </thead>
           <tbody>
@@ -112,66 +108,60 @@ export default () => {
                   </td>
                   <td>{item.shortDesc}</td>
                   <td>{moment(item.created_at).format('MMMM Do')}</td>
-                  <Consumer>
-                    {(value: any) =>
-                      value.state.user.role === 'admin' ? (
-                        <td>
-                          <button
-                            className="btn btn-delete"
-                            onClick={e =>
-                              fetch(
-                                `http://localhost:3001/armory/${item._id}`,
-                                {
-                                  headers: {
-                                    Authorization: cookies.get('token'),
-                                    CSRF: token,
-                                    'content-type': 'application/json',
-                                  },
-                                  method: 'DELETE',
-                                }
-                              )
-                                .then(res => res.json())
-                                .then(res => {
-                                  console.log(res);
-                                  if (res.success) {
-                                    setItems(
-                                      items.filter(elem => {
-                                        return elem._id !== item._id;
-                                      })
-                                    );
-                                    // setAlert({
-                                    //   level: 'success',
-                                    //   message: `${res.message ||
-                                    //     'Success'}. It may take up to an hour for the changes to be reflected.`,
-                                    //   show: true,
-                                    // });
-                                  } else {
-                                    // setAlert({
-                                    //   level: 'danger',
-                                    //   message:
-                                    //     res.message ||
-                                    //     'An unknown error occured',
-                                    //   show: true,
-                                    // });
-                                  }
-                                })
-                                .catch(
-                                  err => console.log(err.message)
-                                  // setAlert({
-                                  //   level: 'danger',
-                                  //   message:
-                                  //     err.message || 'An unknown error occured',
-                                  //   show: true,
-                                  // })
-                                )
-                            }
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      ) : null
-                    }
-                  </Consumer>
+
+                  {role === 'admin' ? (
+                    <td>
+                      <button
+                        className="btn btn-delete"
+                        onClick={e =>
+                          fetch(`http://localhost:3001/armory/${item._id}`, {
+                            headers: {
+                              Authorization: cookies.get('token'),
+                              CSRF: token,
+                              'content-type': 'application/json',
+                            },
+                            method: 'DELETE',
+                          })
+                            .then(res => res.json())
+                            .then(res => {
+                              console.log(res);
+                              if (res.success) {
+                                setItems(
+                                  items.filter(elem => {
+                                    return elem._id !== item._id;
+                                  })
+                                );
+                                // setAlert({
+                                //   level: 'success',
+                                //   message: `${res.message ||
+                                //     'Success'}. It may take up to an hour for the changes to be reflected.`,
+                                //   show: true,
+                                // });
+                              } else {
+                                // setAlert({
+                                //   level: 'danger',
+                                //   message:
+                                //     res.message ||
+                                //     'An unknown error occured',
+                                //   show: true,
+                                // });
+                              }
+                            })
+                            .catch(
+                              err => console.log(err.message)
+                              // setAlert({
+                              //   level: 'danger',
+                              //   message:
+                              //     err.message || 'An unknown error occured',
+                              //   show: true,
+                              // })
+                            )
+                        }
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  ) : null}
                 </tr>
               );
             })}

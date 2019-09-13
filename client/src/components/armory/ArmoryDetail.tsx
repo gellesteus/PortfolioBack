@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import { Consumer } from '../../context';
+import { useSelector } from 'react-redux';
 import Alert from '../error/Alert';
 import useCSRF from '../hooks/useCSRF';
 import Gallery from '../layout/Gallery';
@@ -20,7 +20,7 @@ export default (props: IProps) => {
   const token = useCSRF();
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState();
-
+  const role = useSelector((state: any) => state.userReducer.user.role);
   useEffect(() => {
     fetch(`http://localhost:3001/armory/${props.match.params.id}`, {
       headers: {
@@ -60,16 +60,12 @@ export default (props: IProps) => {
         <Alert {...alert} />
         <h1>{item.name}</h1>
         <p>{item.longDesc}</p>
-        <Consumer>
-          {(value: any) =>
-            value.state.user.role === 'admin' ? (
-              <div>
-                <button>Edit Item</button>
-                <button>Delete Item</button>
-              </div>
-            ) : null
-          }
-        </Consumer>
+        {role === 'admin' ? (
+          <div>
+            <button>Edit Item</button>
+            <button>Delete Item</button>
+          </div>
+        ) : null}
         <Gallery images={item.images} />
       </div>
     );

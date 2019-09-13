@@ -2,21 +2,16 @@ import React, { useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import Loading from '../layout/Loading';
 import UserSection from './UserSection';
-
+import { IPost } from '../../types';
 const cookies = new Cookies();
-
-export interface IUser {
-  id: string;
-}
 
 export interface IProps {
   id: string;
-  user: IUser;
 }
 
 export default (props: IProps) => {
   const [loading, setLoading] = useState(true);
-  const [state, setState] = useState();
+  const [post, setPost] = useState({} as IPost);
   useEffect(() => {
     fetch(`http://localhost:3001/forum/post/${props.id}`, {
       headers: {
@@ -27,9 +22,7 @@ export default (props: IProps) => {
       .then(res => res.json())
       .then(res => {
         setLoading(false);
-        setState((s: any) => {
-          return { ...s, ...res };
-        });
+        setPost(res);
       })
       .catch(e => console.log(e));
   }, [props.id]);
@@ -40,8 +33,8 @@ export default (props: IProps) => {
         <Loading />
       ) : (
         <>
-          <UserSection user={state.post.user} />
-          <div className="post-content">{state.post.content}</div>
+          <UserSection id={post.poster._id} />
+          <div className="post-content">{post.body}</div>
         </>
       )}
     </div>

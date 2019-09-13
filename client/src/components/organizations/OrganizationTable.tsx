@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import Member from './Member';
-import Pagination from '../layout/Pagination';
-import Loading from '../layout/Loading';
+import React, { CSSProperties, useEffect, useState } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import Cookies from 'universal-cookie';
+import Loading from '../layout/Loading';
+import Pagination from '../layout/Pagination';
+import Member, { IMember } from './Member';
+
 const cookie = new Cookies();
-export default props => {
+
+export default (props: RouteComponentProps) => {
   const [loading, setLoading] = useState(true);
   const [pages, setPages] = useState();
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState({ sortColumn: '_id', sortOrder: 1 });
-  const [data, setData] = useState();
+  const [data, setData] = useState({ organizations: [] });
 
-  const toServerSort = data => {
-    switch (data) {
+  const toServerSort = (sortStyle: string) => {
+    switch (sortStyle) {
       case 'Name':
         return 'name';
       case 'Members':
@@ -34,9 +37,9 @@ export default props => {
       )}&sortOrder=${sort.sortOrder}`,
       {
         headers: {
-          'Content-Type': 'application/json',
           Accept: 'application/json',
           Authorization: cookie.get('token'),
+          'Content-Type': 'application/json',
         },
       }
     )
@@ -52,31 +55,32 @@ export default props => {
   useEffect(loadData, [sort, page]);
 
   const sortData = () => {
-    if (loading) return;
-    this.loadData();
+    if (loading) {
+      return;
+    }
+    loadData();
   };
 
-  const onSort = event => {
-    const sortKey = event.target.innerHTML.trim().split(' ')[0];
+  const onSort = (event: React.MouseEvent) => {
+    const sortKey = (event.target as HTMLElement).innerHTML
+      .trim()
+      .split(' ')[0];
     if (sort.sortColumn === sortKey) {
       if (sort.sortOrder === -1) {
-        setSort(
-          {
-            sortColumn: '_id',
-            sortOrder: 1,
-          },
-          sortData
-        );
+        setSort({
+          sortColumn: '_id',
+          sortOrder: 1,
+        });
       } else {
-        setSort({ ...sort, sortOrder: -sort.sortOrder }, sortData);
+        setSort({ ...sort, sortOrder: -sort.sortOrder });
       }
     } else {
-      setSort({ sortColumn: sortKey, sortOrder: 1 }, sortData);
+      setSort({ sortColumn: sortKey, sortOrder: 1 });
     }
     setPage(1);
   };
 
-  const getStyle = name => {
+  const getStyle = (name: string) => {
     if (!loading) {
       const styling =
         name === sort.sortColumn || false
@@ -90,7 +94,7 @@ export default props => {
     return itemStyle;
   };
 
-  const glyph = item => {
+  const glyph = (item: string) => {
     if (item === sort.sortColumn) {
       /* Add a glyph with a sort direction */
       if (sort.sortOrder === 1) {
@@ -107,7 +111,7 @@ export default props => {
   return (
     <div>
       <p>Organizations</p>
-      <table id='organizations-table' className='table-data'>
+      <table id="organizations-table" className="table-data">
         <thead>
           <tr>
             <th onClick={onSort} style={getStyle('Name')}>
@@ -123,21 +127,14 @@ export default props => {
         </thead>
         {!loading ? (
           <tbody>
-            {data.organizations.map((item, key) => {
-              return (
-                <Member
-                  key={item._id}
-                  index={item._id}
-                  member={item}
-                  match={props.match}
-                />
-              );
+            {data.organizations.map((item: any, key: any) => {
+              return <Member key={item._id} member={item as IMember} />;
             })}
           </tbody>
         ) : (
           <tbody>
             <tr>
-              <td colSpan='3'>
+              <td colSpan={3}>
                 <Loading />
               </td>
             </tr>
@@ -151,7 +148,7 @@ export default props => {
   );
 };
 
-const itemStyle = {
+const itemStyle: CSSProperties = {
   cursor: 'pointer',
   userSelect: 'none',
 };

@@ -5,8 +5,8 @@ import React, { useEffect } from 'react';
 export interface IProps {
   bgLeft: string;
   bgRight: string;
-  left: () => React.ElementType;
-  right: () => React.ElementType;
+  left: () => React.ReactNode;
+  right: () => React.ReactNode;
 }
 const SlidingBackground = (props: IProps) => {
   useEffect(() => {

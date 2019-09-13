@@ -7,7 +7,7 @@ export enum Level {
   SUCCESS = 'success',
 }
 
-const alert = () => {
+export default () => {
   const show = useSelector((state: any) => state.alertReducer.show);
   const level = useSelector((state: any) => state.alertReducer.level);
   const message: string = useSelector(
@@ -24,5 +24,3 @@ const alert = () => {
     return null;
   }
 };
-
-export default alert;

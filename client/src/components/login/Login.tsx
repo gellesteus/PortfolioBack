@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import { Consumer } from '../../context';
 import Alert from '../error/Alert';
 import useCSRF from '../hooks/useCSRF';
 import { useDispatch } from 'react-redux';
+import { logIn } from '../../actions';
+
 const cookies = new Cookies();
 
 //TODO: Reqrite using redux
@@ -16,7 +17,7 @@ export default (props: IProps) => {
   const [password, setPassword] = useState('');
   const token = useCSRF();
   const [error, setError] = useState({ error: false, message: '' });
-
+  const dispatch = useDispatch();
   const validate = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!password || !email) {
@@ -39,12 +40,6 @@ export default (props: IProps) => {
         .then(res => res.json())
         .then(res => {
           if (res.success) {
-            props.login({
-              type: 'LOGIN',
-              payload: {
-                user: res.user,
-              },
-            });
             cookies.set('token', res.user.sessionToken);
           } else {
             setError({
@@ -64,14 +59,6 @@ export default (props: IProps) => {
 
   return (
     <div className="content">
-      <Consumer>
-        {(value: any) => {
-          if (value.state.isLoggedIn) {
-            return <Redirect to="/" />;
-          }
-        }}
-      </Consumer>
-      <Alert show={error.error} message={error.message} level={'danger'} />
       <form>
         <div className="spacer" />
         <div className="form-column-labels">
@@ -83,7 +70,7 @@ export default (props: IProps) => {
             name="email"
             type="text"
             placeholer="email"
-            onChange={e => {
+            onChange={(e: React.changEvent<HTMLInputElement>) => {
               setEmail(e.target.value);
             }}
           />
@@ -92,7 +79,7 @@ export default (props: IProps) => {
             name="password"
             type="password"
             placeholer="password"
-            onChange={e => {
+            onChange={(e: React.changEvent<HTMLInputElement>) => {
               setPassword(e.target.value);
             }}
           />
@@ -101,7 +88,7 @@ export default (props: IProps) => {
       </form>
       <div className="form-under">
         <div className="center">
-          <button href="#" id="button-login" onClick={validate}>
+          <button id="button-login" onClick={validate}>
             Login
           </button>
 

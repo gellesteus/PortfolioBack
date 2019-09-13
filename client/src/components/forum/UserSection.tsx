@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import Loading from '../layout/Loading';
-
+import { IUser } from '../../types';
 const cookies = new Cookies();
 export interface IProps {
-  id: string;
+  id: String;
 }
 export default (props: IProps) => {
   const [loading, setLoading] = useState(true);
-  const [state, setState] = useState();
+  const [user, setUser] = useState({} as IUser);
 
   useEffect(() => {
     fetch(`http://localhost:3001/user/${props.id}`, {
@@ -20,9 +20,7 @@ export default (props: IProps) => {
       .then(res => res.json())
       .then(res => {
         setLoading(false);
-        setState((s: any) => {
-          return { ...s, ...res };
-        });
+        setUser(res);
       })
       .catch(e => console.log(e));
   }, [props.id]);
@@ -32,7 +30,7 @@ export default (props: IProps) => {
       {loading ? (
         <Loading />
       ) : (
-        <div className="user-section">{state.content}</div>
+        <div className="user-section">{user.username}</div>
       )}
     </>
   );

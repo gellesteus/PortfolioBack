@@ -1,9 +1,13 @@
-<<<<<<< HEAD
 import { Level as ELevel } from '../components/error/Alert';
-=======
-import { level as ELevel } from '../components/helper/Alert';
->>>>>>> 73ff7058d85f43b81bee64c586d3d4b337561ea0
-import { ActionTypes, IAction } from './action';
+import { IAction } from '../types';
+export enum ActionTypes {
+  LOG_IN = 'LOG_IN',
+  LOG_OUT = 'LOG_OUT',
+  DISPLAY_ALERT = 'DISPLAY_ALERT',
+  DISPLAY_MODAL = 'DISPLAY_MODAL',
+  HIDE_ALERT = 'HIDE_ALERT',
+  HIDE_MODAL = 'HIDE_MODAL',
+}
 
 export function logIn(user: any): IAction {
   return { type: ActionTypes.LOG_IN, data: user };
@@ -17,7 +21,7 @@ export function displayAlert(message: string, level: ELevel): IAction {
   return { type: ActionTypes.DISPLAY_ALERT, data: { level, message } };
 }
 
-export function displayModal(component: () => JSX.Element): IAction {
+export function displayModal(component: () => React.ReactNode): IAction {
   return { type: ActionTypes.DISPLAY_MODAL, data: component() };
 }
 

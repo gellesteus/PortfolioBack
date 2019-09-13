@@ -1,0 +1,28 @@
+ERROR: Fri Aug 30 2019 21:55:45 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+INFO : Fri Aug 30 2019 21:55:55 GMT-0400 Successfully connected to Redis server 
+ERROR: Fri Aug 30 2019 22:11:49 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - read ECONNRESET 
+INFO : Fri Aug 30 2019 22:11:49 GMT-0400 Connection to Redis server closed 
+INFO : Fri Aug 30 2019 22:11:58 GMT-0400 Successfully connected to Redis server 
+INFO : Fri Aug 30 2019 22:43:37 GMT-0400 Connection to Redis server closed 
+ERROR: Fri Aug 30 2019 22:43:37 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - read ECONNRESET 
+INFO : Fri Aug 30 2019 22:43:38 GMT-0400 Successfully connected to Redis server 
+ERROR: Fri Aug 30 2019 22:51:39 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - read ECONNRESET 
+INFO : Fri Aug 30 2019 22:51:39 GMT-0400 Connection to Redis server closed 
+ERROR: Fri Aug 30 2019 22:51:39 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+ERROR: Fri Aug 30 2019 22:51:40 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+ERROR: Fri Aug 30 2019 22:51:40 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+ERROR: Fri Aug 30 2019 22:51:41 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+ERROR: Fri Aug 30 2019 22:51:43 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+ERROR: Fri Aug 30 2019 22:51:46 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+ERROR: Fri Aug 30 2019 22:51:51 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+ERROR: Fri Aug 30 2019 23:41:09 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+INFO : Fri Aug 30 2019 23:41:26 GMT-0400 Successfully connected to Redis server 
+ERROR: Fri Aug 30 2019 23:43:05 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - read ECONNRESET 
+INFO : Fri Aug 30 2019 23:43:05 GMT-0400 Connection to Redis server closed 
+ERROR: Fri Aug 30 2019 23:43:05 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+ERROR: Fri Aug 30 2019 23:43:06 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+ERROR: Fri Aug 30 2019 23:43:06 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+ERROR: Fri Aug 30 2019 23:43:07 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+ERROR: Fri Aug 30 2019 23:43:09 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+ERROR: Fri Aug 30 2019 23:43:12 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 
+ERROR: Fri Aug 30 2019 23:43:17 GMT-0400 Error: Redis connection to redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 failed - getaddrinfo ENOTFOUND redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com redis-18467.c89.us-east-1-3.ec2.cloud.redislabs.com:18467 

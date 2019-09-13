@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function MapMain() {
+export default () => {
   return (
-    <div className='content'>
+    <div className="content">
       <p>Map</p>
     </div>
   );
-}
+};

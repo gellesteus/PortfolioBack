@@ -1,18 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import NotFound from '../error/NotFound';
+import React, { useEffect, useState } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
+
 import Cookies from 'universal-cookie';
+import { IRule } from '../../types/index';
+import NotFound from '../error/NotFound';
+
 const cookies = new Cookies();
 
-export default props => {
-  const [state, setState] = useState({ isLoaded: false });
+export default (props: RouteComponentProps<IRule>) => {
+  const [state, setState] = useState({
+    isFound: false,
+    isLoaded: false,
+    longDesc: '',
+    name: '',
+  });
 
   useEffect(() => {
     /* Load all the rules text from the API */
-    fetch(`http://localhost:3001/rule/${props.match.params.id}`, {
+    fetch(`http://localhost:3001/rule/${props.match.params._id}`, {
       headers: {
-        'Content-Type': 'application/json',
         Accept: 'application/json',
         Authorization: cookies.get('token'),
+        'Content-Type': 'application/json',
       },
     })
       .then(res => res.json())
@@ -43,14 +52,14 @@ export default props => {
           };
         });
       });
-  }, [props.match.params.id]);
+  }, [props.match.params._id]);
 
-  if (!this.state.isFound) {
+  if (!state.isFound) {
     return <NotFound />;
   } else {
     return (
       <div>
-        <h1>{this.state.name}</h1>
+        <h1>{state.name}</h1>
         <div
           dangerouslySetInnerHTML={{
             __html: state.longDesc,

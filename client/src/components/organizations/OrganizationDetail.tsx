@@ -1,17 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import Loading from '../layout/Loading';
-import { Link } from 'react-router-dom';
+
 const cookie = new Cookies();
 
-const Elem = props => {
+interface IPropsInner {
+  id: string;
+}
+
+export interface IProps extends RouteComponentProps<IPropsInner> {
+  id: string;
+}
+
+const Elem = (props: IPropsInner) => {
   const [member, setMember] = useState();
 
   useEffect(() => {
     fetch(`http://localhost:3001/character/${props.id}`, {
       headers: {
-        'content-type': 'application/json',
         authorization: cookie.get('token'),
+        'content-type': 'application/json',
       },
     })
       .then(res => res.json())
@@ -22,7 +31,7 @@ const Elem = props => {
   return (
     <tr>
       {member == null ? (
-        <td colSpan='2'>
+        <td colSpan={2}>
           <Loading />
         </td>
       ) : (
@@ -34,14 +43,14 @@ const Elem = props => {
   );
 };
 
-export default props => {
+export default (props: IProps) => {
   const [details, setDetails] = useState();
   /* Load data at component mount */
   useEffect(() => {
     fetch(`http://localhost:3001/organization/${props.match.params.id}`, {
       headers: {
-        'content-type': 'application/json',
         authorization: cookie.get('token'),
+        'content-type': 'application/json',
       },
     })
       .then(res => res.json())
@@ -64,7 +73,7 @@ export default props => {
               </tr>
             </thead>
             <tbody>
-              {details.members.map((item, key) => {
+              {details.members.map((item: any, key: any) => {
                 return <Elem id={item} />;
               })}
             </tbody>
@@ -72,7 +81,7 @@ export default props => {
         </>
       )}
       <br />
-      <Link to='/organizations' className='btn btn-primary'>
+      <Link to="/organizations" className="btn btn-primary">
         Back
       </Link>
     </>
