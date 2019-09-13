@@ -33,7 +33,6 @@ export default () => {
       })
         .then(res => res.json())
         .then(res => {
-          console.log(res);
           if (res.success) {
             cookies.set('token', res.user.session_token);
             dispatch(logIn(res.user));
@@ -48,41 +47,41 @@ export default () => {
   };
 
   return (
-    <div className="content">
+    <div className='content'>
       <form>
-        <div className="spacer" />
-        <div className="form-column-labels">
-          <label htmlFor="Email">Email</label>
-          <label htmlFor="password">Password</label>
+        <div className='spacer' />
+        <div className='form-column-labels'>
+          <label htmlFor='Email'>Email</label>
+          <label htmlFor='password'>Password</label>
         </div>
-        <div className="form-column-input">
+        <div className='form-column-input'>
           <input
-            name="email"
-            type="text"
+            name='email'
+            type='text'
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setEmail(e.target.value);
             }}
           />
 
           <input
-            name="password"
-            type="password"
+            name='password'
+            type='password'
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setPassword(e.target.value);
             }}
           />
         </div>
-        <div className="spacer" />
+        <div className='spacer' />
       </form>
-      <div className="form-under">
-        <div className="center">
-          <button id="button-login" onClick={validate}>
+      <div className='form-under'>
+        <div className='center'>
+          <button id='button-login' onClick={validate}>
             Login
           </button>
 
           <p>
             If you do not have an account, click{' '}
-            <Link to="/register">Here</Link> to register
+            <Link to='/register'>Here</Link> to register
           </p>
         </div>
       </div>

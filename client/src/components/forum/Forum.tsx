@@ -6,7 +6,7 @@ import Thread from './Thread';
 export default () => {
   return (
     <div className='content'>
-      <Route exact path='/forum' component={Category} />
+      <Route exact={true} path='/forum' component={Category} />
       <Route path='/forum/category' component={Category} />
       <Route path='/forum/thread' component={Thread} />
     </div>

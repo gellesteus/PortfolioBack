@@ -1,9 +1,13 @@
 /* CSS Variables */
 :root {
-  --color-bg: #ffffff;
-  --color-text: #000000;
-  --color-nav-bg: #ffffff;
-  --color-nav-text: #000000;
+  --main-bg-color: white;
+  --secondary-bg-color: antiqueWhite;
+  --main-sec-border-color: orange;
+  --main-sec-border: 2px solid var(--main-sec-border-color);
+  --main-text-color: black;
+  --main-text-color-incative: black;
+  --secondary-text-color: rgba(0, 0, 0, 0.6);
+  --secondary-text-color-active: rgba(0, 0, 0, 1);
 }
 
 /* CSS reset */
@@ -24,14 +28,15 @@
 html,
 body {
   width: 100vw;
-  height: 100vh;
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  max-width: 100vw;
+  min-height: 100vh;
+  background-color: var(--main-bg-color);
+  color: var(--main-text-color);
 }
 
 nav {
-  color: var(--color-nav-text);
-  background-color: var(--color-nav-bg);
+  color: var(--secondary-text-color);
+  background-color: var(--secondary-bg-color);
 }
 
 .spinner {
@@ -69,8 +74,8 @@ nav {
   grid-template-rows: min-content 1fr min-content;
   grid-template-areas:
     'header header header'
-    'left-sidebar content  right-sidebar'
-    'footer footer  footer';
+    'left-sidebar content right-sidebar'
+    'footer footer footer';
 }
 
 button {
@@ -85,6 +90,10 @@ button {
 
 .header {
   grid-area: header;
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  border-bottom: var(--main-sec-border);
 }
 
 .left-sidebar {
@@ -103,8 +112,15 @@ button {
 }
 
 .footer {
+  z-index: 6;
+  text-align: center;
+  border-top: var(--main-sec-border);
   grid-area: footer;
-  padding: 2%;
+  padding: 0.25rem 1rem 0.25rem 1rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--secondary-bg-color);
 }
 
 .navbar-nav {
@@ -152,21 +168,20 @@ button {
   text-decoration: none;
   padding: 0.5rem;
   cursor: pointer;
-  background: var(--color-nav-bg);
+  background: var(--secondary-bg-color);
 }
 
 .nav-link {
-  opacity: 0.6;
   text-decoration: none;
-  color: var(--color-nav-text);
+  color: var(--secondary-text-color);
 }
 
 .nav-item:hover > .nav-link {
-  opacity: 1;
+  color: var(--secondary-text-color-active);
 }
 
 .nav-link.active {
-  opacity: 1;
+  color: var(--secondary-text-color-active);
 }
 
 .nav-title {
@@ -178,6 +193,9 @@ button {
 }
 
 .alert {
+  position: absolute;
+  left: 10%;
+  width: 80%;
   text-align: center;
   margin-bottom: 1rem;
 }
@@ -391,14 +409,20 @@ label {
   transform: scaleY(0);
   transform-origin: top;
   transition: transform 0.35s linear;
+  border-left: var(--main-sec-border);
+  border-right: var(--main-sec-border);
+  border-bottom: var(--main-sec-border);
+  box-shadow: 10px 10px grey;
+  background-color: var(--secondary-bg-color);
 }
+
 .dropdown-content * {
-  min-width: 100%;
-  max-width: 100%;
+  min-width: 80%;
+  max-width: 80%;
   position: relative;
 }
 
-.dropdown:hover .dropdown-content {
+.dropdown:hover > .dropdown-content {
   transform: scaleY(1);
 }
 

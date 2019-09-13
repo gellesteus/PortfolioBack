@@ -30,4 +30,6 @@ export interface ICategory {
   section: string;
   topics: ITopic[] | undefined;
   moderators: IUser[] | undefined;
+  shortDesc: string;
+  icon: string;
 }

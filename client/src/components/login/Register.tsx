@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+import { displayAlert, logIn } from '../../actions';
 import useCSRF from '../../hooks/useCSRF';
+import { Level } from '../error/Alert';
+
+const cookies = new Cookies();
 
 export default () => {
   const [state, setState] = useState({
@@ -10,7 +16,7 @@ export default () => {
     username: '',
   });
   const token = useCSRF();
-  const [error, setError] = useState({ error: false, message: '' });
+  const dispatch = useDispatch();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     /* Record changes to values */
@@ -29,15 +35,11 @@ export default () => {
       state.password === null ||
       state.password_ver === null
     ) {
-      setError({
-        error: true,
-        message: 'Please fill out all forms',
-      });
+      dispatch(displayAlert('Please fill out all forms', Level.DANGER));
     } else if (state.password !== state.password_ver) {
-      setError({
-        error: true,
-        message: 'Passwords do not match',
-      });
+      dispatch(
+        displayAlert('Please ensure that the passwords match', Level.DANGER)
+      );
     } else {
       fetch('api/user', {
         body: JSON.stringify({ ...state }),
@@ -50,53 +52,44 @@ export default () => {
         .then(res => res.json())
         .then(res => {
           if (res.success) {
-            /* Redux login */
+            cookies.set('token', res.user.session_token);
+            dispatch(logIn(res.user));
           } else {
-            setError({
-              error: true,
-              message: res.message,
-            });
+            dispatch(displayAlert(res.message, Level.DANGER));
           }
         })
         .catch(err => {
-          setError({
-            error: true,
-            message: err.message || err,
-          });
+          dispatch(displayAlert(err.message, Level.DANGER));
         });
     }
   };
   return (
-    <div className="content">
+    <div className='content'>
       <p>Register Here</p>
       <br />
-      <form className="row">
-        <div className="column">
-          <label htmlFor="email"> Enter your Email Address</label>
-          <label htmlFor="username">Enter a Username</label>
-          <label htmlFor="password">Enter a password</label>
-          <label htmlFor="password_ver">Enter that password again</label>
+      <form className='row'>
+        <div className='column'>
+          <label htmlFor='email'> Enter your Email Address</label>
+          <label htmlFor='username'>Enter a Username</label>
+          <label htmlFor='password'>Enter a password</label>
+          <label htmlFor='password_ver'>Enter that password again</label>
         </div>
 
-        <div className="column">
-          <input type="email" onChange={e => onChange(e)} name="email" />
-          <input type="text" onChange={e => onChange(e)} name="username" />
-          <input type="password" onChange={e => onChange(e)} name="password" />
-          <input
-            type="password"
-            onChange={e => onChange(e)}
-            name="password_ver"
-          />
+        <div className='column'>
+          <input type='email' onChange={onChange} name='email' />
+          <input type='text' onChange={onChange} name='username' />
+          <input type='password' onChange={onChange} name='password' />
+          <input type='password' onChange={onChange} name='password_ver' />
         </div>
-        <div className="row">
-          <button id="button-register" onClick={e => onSubmit(e)}>
+        <div className='row'>
+          <button id='button-register' onClick={onSubmit}>
             Login
           </button>
         </div>
       </form>
       <br />
       <p>
-        If you already have an account, click <Link to="/login">here</Link> to
+        If you already have an account, click <Link to='/login'>here</Link> to
         login
       </p>
     </div>

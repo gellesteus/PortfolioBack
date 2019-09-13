@@ -8,6 +8,7 @@ import { IItem } from '../../types';
 import { Level } from '../error/Alert';
 import Gallery from '../layout/Gallery';
 import Loading from '../layout/Loading';
+import EditModal from './EditModal';
 
 const cookies = new Cookies();
 
@@ -48,7 +49,7 @@ export default (props: IProps) => {
   }, [props.match.params.id]);
 
   const deleteItem = () => {
-    fetch(`/apii/armory/${props.match.params.id}`, {
+    fetch(`/api/armory/${props.match.params.id}`, {
       headers: {
         CSRF: token,
         accept: 'application/json',
@@ -59,7 +60,12 @@ export default (props: IProps) => {
     dispatch(redirect('/armory'));
   };
 
-  const editItem = () => {};
+  const editItem = (id: IItem) =>
+    dispatch(
+      displayModal(() => (
+        <EditModal item={item} token={token} update={setItem} />
+      ))
+    );
 
   if (loading) {
     return <Loading />;
@@ -70,7 +76,7 @@ export default (props: IProps) => {
         <p>{item.longDesc}</p>
         {role === 'admin' ? (
           <div>
-            <button onClick={editItem}>Edit Item</button>
+            <button onClick={e => editItem(item)}>Edit Item</button>
             <button onClick={deleteItem}>Delete Item</button>
           </div>
         ) : null}

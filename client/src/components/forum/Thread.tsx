@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Cookies from 'universal-cookie';
+import { displayAlert } from '../../actions';
+import { IPost, ITopic } from '../../types';
+import { Level } from '../error/Alert';
 import Loading from '../layout/Loading';
 import Post from './Post';
 const cookies = new Cookies();
 
 export interface IProps {
   id: string;
-  posts: IPost[];
-}
-
-export interface IPost {
-  _id: string;
 }
 
 export default (props: IProps) => {
-  const [state, setState] = useState();
+  const [state, setState] = useState((null as unknown) as ITopic);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
   useEffect(() => {
     /* Retrieve the thread */
     fetch(`api/forum/thread/${props.id}`, {
@@ -27,11 +27,9 @@ export default (props: IProps) => {
       .then(res => res.json())
       .then(res => {
         setLoading(false);
-        setState((s: any) => {
-          return { ...s, ...res };
-        });
-      });
-    // .catch(e => console.log(e));
+        setState(res.topics);
+      })
+      .catch(e => dispatch(displayAlert(e.message, Level.DANGER)));
   }, [props.id]);
 
   return (
@@ -39,11 +37,15 @@ export default (props: IProps) => {
       {loading ? (
         <Loading />
       ) : (
-        <div className="row">
-          {state.posts.map((item: IPost, key: number) => {
-            return <Post key={item._id} id={item._id} />;
-          })}
-        </div>
+        <>
+          {state.posts ? (
+            <div className='row'>
+              {state.posts.map((item: IPost, key: number) => {
+                return <Post key={item._id} id={item._id} />;
+              })}
+            </div>
+          ) : null}
+        </>
       )}
     </>
   );

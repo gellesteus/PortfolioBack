@@ -61,40 +61,30 @@ export default () => {
       <Redirecter />
       <Alert />
       <Modal />
-      <div className="main">
+      <div className='main'>
         {isLoggedIn ? (
           <>
             <Navigation />
             <Switch>
-              <Route exact={true} path="/" component={FrontMain} />
-              <Route path="/map" component={MapMain} />
-              <Route path="/grave" component={GraveMain} />
-              <Route path="/characters" component={CharsMain} />
-              <Route path="/organizations" component={OrganizationMain} />
-              <Route path="/rules" component={RulesMain} />
-              <Route path="/forum" component={Forum} />
-              <Route path="/bestiary" component={Bestiary} />
-              <Route path="/armory" component={Armory} />
-              <Route path="/profile" component={Profile} />
-              <Route
-                path="/register"
-                render={props => <Redirect {...props} to="/" />}
-              />
-              <Route
-                path="/login"
-                render={props => <Redirect {...props} to="/" />}
-              />
+              <Route path='/map' component={MapMain} />
+              <Route path='/grave' component={GraveMain} />
+              <Route path='/characters' component={CharsMain} />
+              <Route path='/organizations' component={OrganizationMain} />
+              <Route path='/rules' component={RulesMain} />
+              <Route path='/forum' component={Forum} />
+              <Route path='/bestiary' component={Bestiary} />
+              <Route path='/armory' component={Armory} />
+              <Route path='/profile' component={Profile} />
               {user.role === 'admin' ? (
-                <Route path="/admin" component={Admin} />
+                <Route path='/admin' component={Admin} />
               ) : null}
-              <Route render={props => <Redirect {...props} to="/" />} />
+              <Route component={FrontMain} />
             </Switch>
           </>
         ) : (
           <Switch>
-            <Route path="/login" render={props => <Login />} />
-            <Route path="/register" render={props => <Register />} />
-            <Route render={props => <Redirect {...props} to="/login" />} />
+            <Route exact={true} path='/register' component={Register} />
+            <Route component={Login} />
           </Switch>
         )}
         <Footer />

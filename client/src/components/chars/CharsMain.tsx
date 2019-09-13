@@ -6,7 +6,7 @@ import CharacterTable from './CharacterTable';
 export default function CharsMain() {
   return (
     <div className='content'>
-      <Route exact path='/characters' component={CharacterTable} />
+      <Route exact={true} path='/characters' component={CharacterTable} />
       <Route path={'/characters/:id'} component={Character} />
     </div>
   );
