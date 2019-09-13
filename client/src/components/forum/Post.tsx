@@ -13,7 +13,7 @@ export default (props: IProps) => {
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState({} as IPost);
   useEffect(() => {
-    fetch(`http://localhost:3001/forum/post/${props.id}`, {
+    fetch(`api/forum/post/${props.id}`, {
       headers: {
         authorization: cookies.get('token'),
         'content-type': 'application/json',

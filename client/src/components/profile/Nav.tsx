@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 const Nav = () => {
-  const user = useSelector((state: any) => state.userReducer.user);
+  const user = useSelector((state: any) => state.user.user);
   return (
     <div className="navbar-nav-sidebar">
       <ul className="nav-links-sidebar">

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import { useSelector } from 'react-redux';
-import Alert from '../error/Alert';
-import useCSRF from '../hooks/useCSRF';
+import { useDispatch, useSelector } from 'react-redux';
+import { Level } from '../error/Alert';
+import useCSRF from '../../hooks/useCSRF';
 import Gallery from '../layout/Gallery';
 import Loading from '../layout/Loading';
-
+import { displayAlert } from '../../actions';
 const cookies = new Cookies();
 
 export interface IParams {
@@ -20,9 +20,10 @@ export default (props: IProps) => {
   const token = useCSRF();
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState();
-  const role = useSelector((state: any) => state.userReducer.user.role);
+  const role = useSelector((state: any) => state.user.user.role);
+  const dispatch = useDispatch();
   useEffect(() => {
-    fetch(`http://localhost:3001/armory/${props.match.params.id}`, {
+    fetch(`/api/armory/${props.match.params.id}`, {
       headers: {
         Authorization: cookies.get('token'),
         'content-type': 'application/json',
@@ -34,20 +35,12 @@ export default (props: IProps) => {
           setItem(res.item);
           setLoading(false);
         } else {
-          // setAlert({
-          //   level: 'danger',
-          //   message: res.message || 'An unknown error occured',
-          //   show: true,
-          // });
+          dispatch(displayAlert(res.message, Level.DANGER));
           setLoading(true);
         }
       })
       .catch(e => {
-        // setAlert({
-        //   level: 'danger',
-        //   message: e.message || 'An unknown error occured',
-        //   show: true,
-        // });
+        dispatch(displayAlert(e.message, Level.DANGER));
         setLoading(true);
       });
   }, [props.match.params.id]);
@@ -57,7 +50,6 @@ export default (props: IProps) => {
   } else {
     return (
       <div>
-        <Alert {...alert} />
         <h1>{item.name}</h1>
         <p>{item.longDesc}</p>
         {role === 'admin' ? (

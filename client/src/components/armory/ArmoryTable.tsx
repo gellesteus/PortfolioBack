@@ -1,21 +1,16 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import useCSRF from '../hooks/useCSRF';
+import { displayAlert } from '../../actions';
+import useCSRF from '../../hooks/useCSRF';
+import { Level } from '../error/Alert';
 import Loading from '../layout/Loading';
 import Pagination from '../layout/Pagination';
-import { useSelector } from 'react-redux';
+import { IItem } from '../../types';
 const cookies = new Cookies();
 const count = 10;
-
-export interface IItem {
-  _id: string;
-  created_at: Date;
-  name: string;
-  shortDesc: string;
-  longDesc: string;
-}
 
 /* TODO: Admin stuff */
 export default () => {
@@ -25,11 +20,11 @@ export default () => {
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState({ sortColumn: '_id', sortDirection: 1 });
   const token = useCSRF();
-  const role = useSelector((state: any) => state.userReducer.user.role);
-
+  const role = useSelector((state: any) => state.user.user.role);
+  const dispatch = useDispatch();
   useEffect(() => {
     fetch(
-      `http://localhost:3001/armory?page=${page}&count=${count}&sortColumn=${sort.sortColumn}&sortOrder=${sort.sortDirection}`,
+      `api/armory?page=${page}&count=${count}&sortColumn=${sort.sortColumn}&sortOrder=${sort.sortDirection}`,
       {
         headers: {
           Authorization: cookies.get('token'),
@@ -39,11 +34,15 @@ export default () => {
     )
       .then(res => res.json())
       .then(res => {
-        setPages(res.pages);
-        setItems(res.items);
-        setLoading(false);
+        if (res.success) {
+          setPages(res.pages);
+          setItems(res.items);
+          setLoading(false);
+        } else {
+          dispatch(displayAlert(res.message, Level.DANGER));
+        }
       })
-      .catch(e => setLoading(true));
+      .catch(e => dispatch(displayAlert(e.message, Level.DANGER)));
   }, [page, sort]);
 
   const setSortDir = (target: string) => {
@@ -114,7 +113,7 @@ export default () => {
                       <button
                         className="btn btn-delete"
                         onClick={e =>
-                          fetch(`http://localhost:3001/armory/${item._id}`, {
+                          fetch(`/api/armory/${item._id}`, {
                             headers: {
                               Authorization: cookies.get('token'),
                               CSRF: token,
@@ -124,37 +123,35 @@ export default () => {
                           })
                             .then(res => res.json())
                             .then(res => {
-                              console.log(res);
                               if (res.success) {
                                 setItems(
                                   items.filter(elem => {
                                     return elem._id !== item._id;
                                   })
                                 );
-                                // setAlert({
-                                //   level: 'success',
-                                //   message: `${res.message ||
-                                //     'Success'}. It may take up to an hour for the changes to be reflected.`,
-                                //   show: true,
-                                // });
+                                dispatch(
+                                  displayAlert(
+                                    res.message ||
+                                      'Success: It may take up to an hour for the changes to be reflected',
+                                    Level.DANGER
+                                  )
+                                );
                               } else {
-                                // setAlert({
-                                //   level: 'danger',
-                                //   message:
-                                //     res.message ||
-                                //     'An unknown error occured',
-                                //   show: true,
-                                // });
+                                dispatch(
+                                  displayAlert(
+                                    res.message || 'An unknown error occured',
+                                    Level.DANGER
+                                  )
+                                );
                               }
                             })
-                            .catch(
-                              err => console.log(err.message)
-                              // setAlert({
-                              //   level: 'danger',
-                              //   message:
-                              //     err.message || 'An unknown error occured',
-                              //   show: true,
-                              // })
+                            .catch(err =>
+                              dispatch(
+                                displayAlert(
+                                  err.message || 'An unkown error occured',
+                                  Level.DANGER
+                                )
+                              )
                             )
                         }
                       >

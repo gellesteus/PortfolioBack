@@ -17,7 +17,7 @@ const Elem = (props: IPropsInner) => {
   const [member, setMember] = useState();
 
   useEffect(() => {
-    fetch(`http://localhost:3001/character/${props.id}`, {
+    fetch(`api/character/${props.id}`, {
       headers: {
         authorization: cookie.get('token'),
         'content-type': 'application/json',
@@ -47,7 +47,7 @@ export default (props: IProps) => {
   const [details, setDetails] = useState();
   /* Load data at component mount */
   useEffect(() => {
-    fetch(`http://localhost:3001/organization/${props.match.params.id}`, {
+    fetch(`api/${props.match.params.id}`, {
       headers: {
         authorization: cookie.get('token'),
         'content-type': 'application/json',

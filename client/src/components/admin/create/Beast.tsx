@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Cookies from 'universal-cookie';
-import useCSRF from '../../hooks/useCSRF';
+import useCSRF from '../../../hooks/useCSRF';
 
 const cookies = new Cookies();
 /* TODO: Images */
@@ -21,7 +21,7 @@ export default () => {
     // });
 
     e.preventDefault();
-    fetch('http://localhost:3001/bestiary', {
+    fetch('/api/bestiary', {
       body: JSON.stringify(beast),
       headers: {
         CSRF: token,

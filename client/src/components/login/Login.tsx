@@ -1,32 +1,26 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import Alert from '../error/Alert';
-import useCSRF from '../hooks/useCSRF';
-import { useDispatch } from 'react-redux';
-import { logIn } from '../../actions';
+import { displayAlert, logIn } from '../../actions';
+import useCSRF from '../../hooks/useCSRF';
+import { Level } from '../error/Alert';
 
 const cookies = new Cookies();
 
-//TODO: Reqrite using redux
-
-export interface IProps {}
-
-export default (props: IProps) => {
+export default () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const token = useCSRF();
-  const [error, setError] = useState({ error: false, message: '' });
   const dispatch = useDispatch();
   const validate = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!password || !email) {
-      // setError({
-      //   error: true,
-      //   Message: 'Please enter your email and password',
-      // });
+      dispatch(
+        displayAlert('Please enter your username and password', Level.DANGER)
+      );
     } else {
-      fetch(`http://localhost:3001/user/login`, {
+      fetch(`api/user/login`, {
         body: JSON.stringify({
           email,
           password,
@@ -39,20 +33,16 @@ export default (props: IProps) => {
       })
         .then(res => res.json())
         .then(res => {
+          console.log(res);
           if (res.success) {
-            cookies.set('token', res.user.sessionToken);
+            cookies.set('token', res.user.session_token);
+            dispatch(logIn(res.user));
           } else {
-            setError({
-              error: true,
-              message: res.message,
-            });
+            dispatch(displayAlert(res.message, Level.DANGER));
           }
         })
-        .catch(e =>
-          setError({
-            error: true,
-            message: 'Could not connect to server',
-          })
+        .catch((err: Error) =>
+          dispatch(displayAlert(err.message, Level.DANGER))
         );
     }
   };
@@ -69,8 +59,7 @@ export default (props: IProps) => {
           <input
             name="email"
             type="text"
-            placeholer="email"
-            onChange={(e: React.changEvent<HTMLInputElement>) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setEmail(e.target.value);
             }}
           />
@@ -78,8 +67,7 @@ export default (props: IProps) => {
           <input
             name="password"
             type="password"
-            placeholer="password"
-            onChange={(e: React.changEvent<HTMLInputElement>) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setPassword(e.target.value);
             }}
           />

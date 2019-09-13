@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import useCSRF from '../hooks/useCSRF';
+import useCSRF from '../../hooks/useCSRF';
 
 export default () => {
   const [state, setState] = useState({
@@ -39,7 +39,7 @@ export default () => {
         message: 'Passwords do not match',
       });
     } else {
-      fetch('http://localhost:3001/user', {
+      fetch('api/user', {
         body: JSON.stringify({ ...state }),
         headers: {
           CSRF: token,

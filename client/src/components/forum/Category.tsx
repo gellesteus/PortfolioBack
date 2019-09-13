@@ -25,7 +25,7 @@ export default () => {
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState({} as IItem);
   useEffect(() => {
-    fetch('http://localhost:3001/forum/category', {
+    fetch('api//forum/category', {
       headers: {
         Authorization: cookies.get('token'),
         'content-type': 'application/json',

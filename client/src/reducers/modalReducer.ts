@@ -1,8 +1,12 @@
-import { IAction } from '../types';
+import { IAction, IModal } from '../types';
 
-export default (state: any, action: IAction) => {
+const modalReducer = (
+  state: IModal | any = { show: false },
+  action: IAction
+) => {
   switch (action.type) {
     default:
       return state;
   }
 };
+export default modalReducer;

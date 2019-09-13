@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink as Link, Redirect } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import { Consumer } from '../../context';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { logOut } from '../../actions';
 const cookies = new Cookies();
 export default () => {
-  const isLoggedIn = useSelector((state: any) => state.userReducer.isLoggedIn);
-  const username = useSelector((state: any) => state.userReducer.user.username);
-  const role = useSelector((state: any) => state.userReducer.user.role);
+  const username = useSelector((state: any) => state.user.user.username);
+  const role = useSelector((state: any) => state.user.user.role);
+  const dispatch = useDispatch();
 
   return (
     <nav className="header">
@@ -75,23 +75,18 @@ export default () => {
                       </Link>
                     </li>
                   ) : null}
-                  }}
                   <li className="nav-item">
                     <p
                       className="nav-link"
                       onClick={e => {
-                        fetch(`http://localhost:3001/user/logout`, {
+                        fetch(`api/user/logout`, {
                           headers: {
                             authorization: cookies.get('token'),
                             'content-type': 'application/json',
                           },
                           method: 'POST',
                         });
-                        value.dispatch({
-                          payload: {},
-                          type: 'LOGOUT',
-                        });
-                        setRedirect(true);
+                        dispatch(logOut());
                       }}
                     >
                       Logout
@@ -102,7 +97,6 @@ export default () => {
             </div>
           </li>
         </div>
-        )
       </ul>
     </nav>
   );

@@ -5,7 +5,7 @@ export default () => {
   const [token, setToken] = useState('');
   useEffect(() => {
     /* Fetch the token */
-    fetch('http://localhost:3001/csrf', {
+    fetch('/api/csrf', {
       headers: {
         'content-type': 'application/json',
       },
@@ -17,7 +17,7 @@ export default () => {
     return () => {
       /* Destroy the token */
       if (token) {
-        fetch(`http://localhost:3001/csrf/${token}`, {
+        fetch(`/api/csrf/${token}`, {
           headers: {
             CSRF: token,
             method: 'DELETE',

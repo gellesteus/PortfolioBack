@@ -10,8 +10,8 @@ export interface IProps {
 }
 const SlidingBackground = (props: IProps) => {
   useEffect(() => {
+    const wrapper: HTMLElement | null = document.getElementById('wrapper');
     const listener = (e: MouseEvent) => {
-      const wrapper: HTMLElement | null = document.getElementById('wrapper');
       if (wrapper) {
         const top: HTMLElement | null = wrapper.querySelector('.top');
         const handle: HTMLElement | null = wrapper.querySelector(
@@ -28,13 +28,15 @@ const SlidingBackground = (props: IProps) => {
 
           top.style.width = e.clientX + skew + delta + 'px';
         }
-        /* Add the listener */
-
-        wrapper.addEventListener('mousemove', listener);
       }
     };
+
+    /* Add the listener */
+
+    if (wrapper) {
+      wrapper.addEventListener('mousemove', listener);
+    }
     return () => {
-      const wrapper = document.getElementById('wrapper');
       /* Clean the listeners up */
       if (wrapper) {
         wrapper.removeEventListener('mousemove', listener);

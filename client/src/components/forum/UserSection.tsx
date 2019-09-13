@@ -11,7 +11,7 @@ export default (props: IProps) => {
   const [user, setUser] = useState({} as IUser);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/user/${props.id}`, {
+    fetch(`api/user/${props.id}`, {
       headers: {
         authorization: cookies.get('token'),
         'content-type': 'application/json',

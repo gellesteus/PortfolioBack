@@ -18,7 +18,7 @@ export default (props: IProps) => {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     /* Retrieve the thread */
-    fetch(`http://localhost:3000/forum/thread/${props.id}`, {
+    fetch(`api/forum/thread/${props.id}`, {
       headers: {
         authorization: cookies.get('token'),
         'content-type': 'appplication/json',

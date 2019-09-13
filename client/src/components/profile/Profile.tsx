@@ -14,7 +14,7 @@ export default () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3001/user', {
+    fetch('api/user', {
       headers: {
         authorization: cookies.get('token'),
         'content-type': 'application/json',
@@ -39,7 +39,7 @@ export default () => {
       {loading ? null : (
         <>
           <div className="left-sidebar">
-            <Nav user={user} />
+            <Nav />
           </div>
           <div className="content">
             <Route path="/profile/edit" render={props => <Changes />} />

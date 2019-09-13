@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Redirect,
@@ -22,9 +22,9 @@ import OrganizationMain from './components/organizations/OrganizationMain';
 import Profile from './components/profile/Profile';
 import RulesMain from './components/rules/RulesMain';
 
+import { useDispatch, useSelector } from 'react-redux';
 import Alert from './components/error/Alert';
 import Modal from './components/layout/Modal';
-import { useDispatch, useSelector } from 'react-redux';
 
 import Cookies from 'universal-cookie';
 
@@ -33,12 +33,11 @@ import './app.css';
 const cookies = new Cookies();
 
 export default () => {
-  const isLoggedIn = useSelector((state: any) => state.userReducer.isLoggedIn);
-  const user = useSelector((state: any) => state.userReducer.user);
+  const isLoggedIn = useSelector((state: any) => state.user.isLoggedIn);
+  const user = useSelector((state: any) => state.user.user);
   const dispatch = useDispatch();
-
   useEffect(() => {
-    fetch('http://localhost:3001/user', {
+    fetch('/api/user', {
       headers: {
         Authorization: cookies.get('token'),
         'content-type': 'application/json',
@@ -78,11 +77,14 @@ export default () => {
                 path="/register"
                 render={props => <Redirect {...props} to="/" />}
               />
-              <Route path="/login" render={props => <Redirect to="/" />} />
+              <Route
+                path="/login"
+                render={props => <Redirect {...props} to="/" />}
+              />
               {user.role === 'admin' ? (
                 <Route path="/admin" component={Admin} />
               ) : null}
-              <Route render={props => <Redirect to="/" />} />
+              <Route render={props => <Redirect {...props} to="/" />} />
             </Switch>
           </>
         ) : (

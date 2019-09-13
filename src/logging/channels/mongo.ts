@@ -1,7 +1,4 @@
 import mongoose from 'mongoose';
-import mongo from '../../db/mongo';
-
-mongo();
 
 interface ILog extends mongoose.Document {
   createdAt: Date;

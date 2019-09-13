@@ -16,7 +16,9 @@
     "generateKey": "node ./dist/cli/generateKey.js",
     "jsdoc:generate": "npm run build && jsdoc  -R ./readme.md -r ./dist",
     "jsdoc:config": "jsdoc -c jsdoc.conf",
-    "packed": "node ./bundle/server/server.js"
+    "packed": "node ./bundle/server/server.js",
+    "client": "cd client && npm run build",
+    "stack": "npm run client && npm run start:watch"
   },
   "nodemonConfig": {
     "ignore": [
@@ -49,6 +51,7 @@
     "jsdoc-route-plugin": "^0.1.0",
     "moment": "^2.24.0",
     "mongoose": "^5.6.8",
+    "node-fetch": "^2.6.0",
     "redis": "^2.8.0",
     "ws": "^7.1.1"
   },
@@ -66,6 +69,7 @@
     "@types/jest": "^24.0.18",
     "@types/mongoose": "^5.5.15",
     "@types/node": "^12.7.2",
+    "@types/node-fetch": "^2.5.0",
     "@types/redis": "^2.8.13",
     "@types/ws": "^6.0.3",
     "concurrently": "^4.1.2",

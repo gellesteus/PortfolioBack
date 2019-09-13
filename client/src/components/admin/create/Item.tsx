@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Cookies from 'universal-cookie';
-import useCSRF from '../../hooks/useCSRF';
+import useCSRF from '../../../hooks/useCSRF';
 
 const cookies = new Cookies();
 
@@ -22,7 +22,7 @@ export default () => {
     // });
 
     e.preventDefault();
-    fetch('http://localhost:3001/armory', {
+    fetch('/api/armory', {
       body: JSON.stringify(state),
       headers: {
         Authorization: cookies.get('token'),

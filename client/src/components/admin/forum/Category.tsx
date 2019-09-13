@@ -9,7 +9,7 @@ export default () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/forum/categories`, {
+    fetch(`/api/forum/categories`, {
       headers: {
         authorization: cookies.get('token'),
         'content-type': 'application/json',

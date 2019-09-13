@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 
 export default (url: string): any => {
   const [data, setData] = useState({});
-  const user = useSelector((state: any) => state.user);
+  const user = useSelector((state: any) => state.user.user);
   useEffect(() => {
-    console.log('Getting');
     if (user) {
       fetch(url, {
         headers: {
@@ -15,7 +14,6 @@ export default (url: string): any => {
         },
       })
         .then(res => {
-          console.log(res);
           return res.json();
         })
         .then(res => {

@@ -32,7 +32,7 @@ export default (props: RouteComponentProps) => {
   const loadData = () => {
     setLoading(true);
     fetch(
-      `http://localhost:3001/organization?page=${page}&sortColumn=${toServerSort(
+      `api/organization?page=${page}&sortColumn=${toServerSort(
         sort.sortColumn
       )}&sortOrder=${sort.sortOrder}`,
       {
@@ -127,9 +127,13 @@ export default (props: RouteComponentProps) => {
         </thead>
         {!loading ? (
           <tbody>
-            {data.organizations.map((item: any, key: any) => {
-              return <Member key={item._id} member={item as IMember} />;
-            })}
+            {data.organizations ? (
+              <>
+                {data.organizations.map((item: any, key: any) => {
+                  return <Member key={item._id} member={item as IMember} />;
+                })}
+              </>
+            ) : null}
           </tbody>
         ) : (
           <tbody>

@@ -3,10 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { hideModal } from '../../actions';
 
 const Modal = () => {
-  const active = useSelector((state: any) => state.modalReducer.modalActive);
-  const component = useSelector(
-    (state: any) => state.modalReducer.modalComponent
-  );
+  const active = useSelector((state: any) => state.modal.show);
+  const component = useSelector((state: any) => state.modal.component);
   const dispatch = useDispatch();
 
   const hide = () => {

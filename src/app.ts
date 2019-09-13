@@ -24,21 +24,6 @@ import UserRouter from './routes/api/user';
 log.info('Server starting');
 const app: express.Application = express();
 
-/* Connect to the database */
-mongoose
-  .connect(
-    `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_URI}`,
-    { useNewUrlParser: true }
-  )
-  .then(() => log.info('Connected to database'))
-  .catch((e: Error) => log.error(e.message));
-
-log.trace('Preventing mongoose deprecation warnings');
-
-mongoose.set('useNewUrlParser', true);
-mongoose.set('useFindAndModify', false);
-mongoose.set('useCreateIndex', true);
-
 log.trace('Adding middleware');
 app.use(
   cors({
@@ -84,13 +69,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-/* Route for API Information */
-app.get('/', (req: express.Request, res: express.Response) => {
-  res.json({
-    APIVersion: process.env.API_VERSION,
-    time: moment().format(),
-  });
-});
 log.trace('Done adding middleware');
 
 log.trace('Registering routes');

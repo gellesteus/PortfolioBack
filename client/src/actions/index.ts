@@ -10,25 +10,25 @@ export enum ActionTypes {
 }
 
 export function logIn(user: any): IAction {
-  return { type: ActionTypes.LOG_IN, data: user };
+  return { type: ActionTypes.LOG_IN, payload: user };
 }
 
 export function logOut(): IAction {
-  return { type: ActionTypes.LOG_OUT, data: null };
+  return { type: ActionTypes.LOG_OUT, payload: null };
 }
 
 export function displayAlert(message: string, level: ELevel): IAction {
-  return { type: ActionTypes.DISPLAY_ALERT, data: { level, message } };
+  return { type: ActionTypes.DISPLAY_ALERT, payload: { level, message } };
 }
 
 export function displayModal(component: () => React.ReactNode): IAction {
-  return { type: ActionTypes.DISPLAY_MODAL, data: component() };
+  return { type: ActionTypes.DISPLAY_MODAL, payload: component() };
 }
 
 export function hideAlert(): IAction {
-  return { type: ActionTypes.HIDE_ALERT, data: null };
+  return { type: ActionTypes.HIDE_ALERT, payload: null };
 }
 
 export function hideModal(): IAction {
-  return { type: ActionTypes.HIDE_MODAL, data: null };
+  return { type: ActionTypes.HIDE_MODAL, payload: null };
 }

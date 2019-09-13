@@ -17,7 +17,7 @@ export default (props: RouteComponentProps<IRule>) => {
 
   useEffect(() => {
     /* Load all the rules text from the API */
-    fetch(`http://localhost:3001/rule/${props.match.params._id}`, {
+    fetch(`api/rule/${props.match.params._id}`, {
       headers: {
         Accept: 'application/json',
         Authorization: cookies.get('token'),

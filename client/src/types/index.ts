@@ -1,9 +1,15 @@
 import { ReactNode } from 'react';
+import { AnyAction } from 'redux';
 import { Level } from '../components/error/Alert';
 
-export interface IAction {
+export interface IAction extends AnyAction {
   type: string;
-  data: any;
+  payload: any;
+}
+
+export interface IRedirect {
+  redirect: boolean;
+  url?: string;
 }
 
 export interface IUser {
@@ -21,13 +27,13 @@ export interface IUser {
 }
 
 export interface IAlert {
-  level: Level;
-  message: string | undefined;
+  level?: Level;
+  message?: string | undefined;
   show: boolean;
 }
 
 export interface IModal {
-  component: React.ReactNode;
+  component?: React.ReactNode;
   show: boolean;
 }
 
