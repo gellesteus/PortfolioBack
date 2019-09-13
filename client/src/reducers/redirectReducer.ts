@@ -6,6 +6,10 @@ const redirectReducer = (
   action: IAction
 ) => {
   switch (action.type) {
+    case ActionTypes.REDIRECT:
+      return { ...state, redirect: true, url: action.payload };
+    case ActionTypes.STOP_REDIRECT:
+      return { ...state, redirect: false };
     default:
       return state;
   }

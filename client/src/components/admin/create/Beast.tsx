@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Cookies from 'universal-cookie';
+import { displayAlert } from '../../../actions';
 import useCSRF from '../../../hooks/useCSRF';
-
+import { Level } from '../../error/Alert';
 const cookies = new Cookies();
 /* TODO: Images */
 export default () => {
@@ -12,14 +14,9 @@ export default () => {
     shortDesc: '',
   });
   const token = useCSRF();
+  const dispatch = useDispatch();
 
   const submit = (e: React.MouseEvent) => {
-    // setAlert({
-    //   level: 'info',
-    //   message: '',
-    //   show: false,
-    // });
-
     e.preventDefault();
     fetch('/api/bestiary', {
       body: JSON.stringify(beast),
@@ -39,26 +36,21 @@ export default () => {
             name: '',
             shortDesc: '',
           });
-          // setAlert({
-          //   level: 'success',
-          //   message: res.message || 'Success',
-          //   show: true,
-          // });
+
+          dispatch(displayAlert(res.message || 'Success', Level.SUCCESS));
         } else {
-          // setAlert({
-          //   level: 'danger',
-          //   message: res.message || 'An unknown error occured',
-          //   show: true,
-          // });
+          dispatch(
+            displayAlert(
+              res.message || 'An unknown error occured',
+              Level.DANGER
+            )
+          );
         }
       })
-      .catch(
-        err => console.log(err.message)
-        // setAlert({
-        //   level: 'danger',
-        //   message: err.message || 'An unknown error occured',
-        //   show: true,
-        // })
+      .catch(err =>
+        dispatch(
+          displayAlert(err.message || 'An unknown error occured', Level.DANGER)
+        )
       );
   };
 

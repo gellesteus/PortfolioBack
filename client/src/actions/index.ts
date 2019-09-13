@@ -7,6 +7,8 @@ export enum ActionTypes {
   DISPLAY_MODAL = 'DISPLAY_MODAL',
   HIDE_ALERT = 'HIDE_ALERT',
   HIDE_MODAL = 'HIDE_MODAL',
+  REDIRECT = 'REDIRECT',
+  STOP_REDIRECT = 'STOP_REDIRECT',
 }
 
 export function logIn(user: any): IAction {
@@ -31,4 +33,12 @@ export function hideAlert(): IAction {
 
 export function hideModal(): IAction {
   return { type: ActionTypes.HIDE_MODAL, payload: null };
+}
+
+export function redirect(url: string): IAction {
+  return { type: ActionTypes.REDIRECT, payload: url };
+}
+
+export function stopRedirect(): IAction {
+  return { type: ActionTypes.STOP_REDIRECT, payload: null };
 }

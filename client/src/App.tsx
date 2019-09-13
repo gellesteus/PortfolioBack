@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   BrowserRouter as Router,
   Redirect,
@@ -28,6 +28,8 @@ import Modal from './components/layout/Modal';
 
 import Cookies from 'universal-cookie';
 
+import { stopRedirect } from './actions';
+
 import './app.css';
 
 const cookies = new Cookies();
@@ -56,6 +58,7 @@ export default () => {
 
   return (
     <Router>
+      <Redirecter />
       <Alert />
       <Modal />
       <div className="main">
@@ -98,4 +101,27 @@ export default () => {
       </div>
     </Router>
   );
+};
+
+const Redirecter = () => {
+  const shouldRedirect = useSelector((state: any) => state.redirect.redirect);
+  const redirectURL = useSelector((state: any) => state.redirect.url);
+  const [redirecting, setRedirecting] = useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (shouldRedirect) {
+      if (redirecting) {
+        setRedirecting(false);
+        dispatch(stopRedirect());
+      } else {
+        setRedirecting(true);
+      }
+    }
+  }, [shouldRedirect, redirecting]);
+
+  if (redirecting) {
+    return <Redirect to={redirectURL} push={true} />;
+  }
+  return <></>;
 };

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Cookies from 'universal-cookie';
 import useCSRF from '../../../hooks/useCSRF';
-
+import { useDispatch } from 'react-redux';
+import { displayAlert } from '../../../actions';
+import { Level } from '../../error/Alert';
 const cookies = new Cookies();
 
 export default () => {
@@ -14,13 +16,9 @@ export default () => {
 
   const token = useCSRF();
 
-  const submit = (e: React.MouseEvent) => {
-    // setAlert({
-    //   level: 'info',
-    //   message: '',
-    //   show: false
-    // });
+  const dispatch = useDispatch();
 
+  const submit = (e: React.MouseEvent) => {
     e.preventDefault();
     fetch('/api/armory', {
       body: JSON.stringify(state),
@@ -33,28 +31,21 @@ export default () => {
     })
       .then(res => res.json())
       .then(res => {
-        console.log(res);
         if (res.success) {
-          // setAlert({
-          //   level: 'success',
-          //   message: res.message || 'Success',
-          //   show: true,
-          // });
+          dispatch(displayAlert(res.message || 'Success', Level.SUCCESS));
         } else {
-          // setAlert({
-          //   level: 'danger',
-          //   message: res.message || 'An unknown error occured',
-          //   show: true,
-          // });
+          dispatch(
+            displayAlert(
+              res.message || 'An unknown error occured',
+              Level.DANGER
+            )
+          );
         }
       })
-      .catch(
-        err => console.log(err.message)
-        // setAlert({
-        //   level: 'danger',
-        //   message: err.message || 'An unknown error occured',
-        //   show: true,
-        // })
+      .catch(err =>
+        dispatch(
+          displayAlert(err.message || 'An unknown error occured', Level.DANGER)
+        )
       );
   };
 

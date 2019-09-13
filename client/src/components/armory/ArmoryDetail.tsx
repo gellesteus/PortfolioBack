@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import { displayAlert } from '../../actions';
+import { displayAlert, displayModal, redirect } from '../../actions';
 import useCSRF from '../../hooks/useCSRF';
+import { IItem } from '../../types';
 import { Level } from '../error/Alert';
 import Gallery from '../layout/Gallery';
 import Loading from '../layout/Loading';
@@ -20,7 +21,7 @@ export interface IProps extends RouteComponentProps<IParams> {}
 export default (props: IProps) => {
   const token = useCSRF();
   const [loading, setLoading] = useState(true);
-  const [item, setItem] = useState();
+  const [item, setItem] = useState({} as IItem);
   const role = useSelector((state: any) => state.user.user.role);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -46,6 +47,20 @@ export default (props: IProps) => {
       });
   }, [props.match.params.id]);
 
+  const deleteItem = () => {
+    fetch(`/apii/armory/${props.match.params.id}`, {
+      headers: {
+        CSRF: token,
+        accept: 'application/json',
+        'content-type': 'application/json',
+      },
+      method: 'DELETE',
+    });
+    dispatch(redirect('/armory'));
+  };
+
+  const editItem = () => {};
+
   if (loading) {
     return <Loading />;
   } else {
@@ -55,8 +70,8 @@ export default (props: IProps) => {
         <p>{item.longDesc}</p>
         {role === 'admin' ? (
           <div>
-            <button>Edit Item</button>
-            <button>Delete Item</button>
+            <button onClick={editItem}>Edit Item</button>
+            <button onClick={deleteItem}>Delete Item</button>
           </div>
         ) : null}
         <Gallery images={item.images} />
