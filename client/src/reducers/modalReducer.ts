@@ -1,5 +1,5 @@
-import { IAction, IModal } from '../types';
 import { ActionTypes } from '../actions';
+import { IAction, IModal } from '../types';
 
 const modalReducer = (
   state: IModal | any = { show: false },

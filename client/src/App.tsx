@@ -28,7 +28,7 @@ import Modal from './components/layout/Modal';
 
 import Cookies from 'universal-cookie';
 
-import { stopRedirect } from './actions';
+import { stopRedirect, ActionTypes } from './actions';
 
 import './app.css';
 
@@ -38,6 +38,7 @@ export default () => {
   const isLoggedIn = useSelector((state: any) => state.user.isLoggedIn);
   const user = useSelector((state: any) => state.user.user);
   const dispatch = useDispatch();
+
   useEffect(() => {
     fetch('/api/user', {
       headers: {
@@ -48,7 +49,8 @@ export default () => {
       .then(res => res.json())
       .then(res => {
         if (res.success) {
-          dispatch({ type: 'LOGIN', payload: { user: res.user } });
+          dispatch({ type: ActionTypes.LOG_IN, payload: res.user });
+          cookies.set('token', res.user.session_token, { sameSite: 'lax' });
         } else {
           cookies.remove('token');
         }

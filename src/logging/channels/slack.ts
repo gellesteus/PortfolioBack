@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-const url: string | undefined = process.env.SLACK_WEBHOOK;
+let url: string;
 /**
  * Logs a message using a slack webhook
  *
@@ -17,7 +17,13 @@ export default (message: string, level: string): void => {
       },
       method: 'POST',
     }).catch((e: Error) => {
-      throw e;
+      throw new Error('Endpoint not set for Slack logging');
     });
   }
+};
+
+export const setUrl = (webhook: string): boolean => {
+  url = webhook;
+  /* Test webhook */
+  return true;
 };

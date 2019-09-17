@@ -18,7 +18,7 @@ export default () => {
   const [state, setState] = useState({} as IItem);
   const dispatch = useDispatch();
   useEffect(() => {
-    fetch('api//forum/category', {
+    fetch('api/forum/category', {
       headers: {
         Authorization: cookies.get('token'),
         'content-type': 'application/json',

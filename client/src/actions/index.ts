@@ -9,6 +9,7 @@ export enum ActionTypes {
   HIDE_MODAL = 'HIDE_MODAL',
   REDIRECT = 'REDIRECT',
   STOP_REDIRECT = 'STOP_REDIRECT',
+  SET_THEME = 'SET_THEME',
 }
 
 export function logIn(user: any): IAction {
@@ -41,4 +42,8 @@ export function redirect(url: string): IAction {
 
 export function stopRedirect(): IAction {
   return { type: ActionTypes.STOP_REDIRECT, payload: null };
+}
+
+export function setTheme(theme: string): IAction {
+  return { type: ActionTypes.SET_THEME, payload: theme };
 }

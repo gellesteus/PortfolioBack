@@ -1,5 +1,7 @@
 import React from 'react';
+import useGet from '../../hooks/useGet';
 
 export default () => {
-  return <div></div>;
+  const users = useGet('/api/users');
+  return <div />;
 };

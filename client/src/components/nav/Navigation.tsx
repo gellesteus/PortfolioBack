@@ -88,6 +88,7 @@ export default () => {
                           },
                           method: 'POST',
                         });
+                        cookies.remove('token');
                         dispatch(logOut());
                       }}
                     >

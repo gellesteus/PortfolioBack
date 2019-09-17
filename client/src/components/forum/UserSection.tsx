@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import Cookies from 'universal-cookie';
-import Loading from '../layout/Loading';
-import { IUser } from '../../types';
 import { useDispatch } from 'react-redux';
+import Cookies from 'universal-cookie';
 import { displayAlert } from '../../actions';
+import { IUser } from '../../types';
 import { Level } from '../error/Alert';
+import Loading from '../layout/Loading';
 const cookies = new Cookies();
 export interface IProps {
   id: string;

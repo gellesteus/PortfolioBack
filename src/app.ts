@@ -2,9 +2,8 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
 import fileUpload from 'express-fileupload';
-import moment from 'moment';
-import mongoose from 'mongoose';
 import path from 'path';
+import err from './error/err';
 import Scheduler from './jobs/Scheduler';
 import * as log from './logging/log';
 import Accepts from './middleware/api/Accepts';
@@ -89,6 +88,7 @@ app.use('/api/csrf', CSRFRouter);
 
 /* Let react router manage pages */
 app.get('*', (req: express.Request, res: express.Response) => {
+  log.trace('Requst for HTML site');
   res.sendFile(path.resolve(__dirname, '../client/build/index.html'));
 });
 
@@ -100,6 +100,9 @@ app.all('*', (req: express.Request, res: express.Response) => {
     success: false,
   });
 });
+
+app.use(err);
+
 log.trace('done registering routes');
 
 if (!!process.env.IS_WORKER === true) {

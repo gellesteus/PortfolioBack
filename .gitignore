@@ -30,3 +30,4 @@ yarn-error.log*
 client/build
 bundle
 **/*.log
+src/logging/channels/log

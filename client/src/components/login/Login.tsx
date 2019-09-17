@@ -34,7 +34,7 @@ export default () => {
         .then(res => res.json())
         .then(res => {
           if (res.success) {
-            cookies.set('token', res.user.session_token);
+            cookies.set('token', res.user.session_token, { sameSite: 'lax' });
             dispatch(logIn(res.user));
           } else {
             dispatch(displayAlert(res.message, Level.DANGER));

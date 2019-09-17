@@ -229,8 +229,10 @@ router.post('/logout', (req: Request, res: Response): void => {
 // @access 	Private
 router.get('/', (req: Request, res: Response): void => {
   const token = req.get('authorization');
-  User.findOne({ session_token: token }).then(user => {
+  User.findOne({ session_token: token }).then(async user => {
     if (user) {
+      user.session_token = crypto.randomBytes(32).toString('hex');
+      await user.save();
       res.json({
         message: 'user retrieved successfully',
         success: true,

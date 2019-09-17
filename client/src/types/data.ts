@@ -17,7 +17,7 @@ export interface ICharacter {
   known: boolean;
   mannerism?: string | null;
   name: string;
-  secret: string;
+  secret?: string;
 }
 
 export interface IItem {
